@@ -169,11 +169,11 @@ export default {
       } else {
         await this.registUser(this.user);
         if (this.isRegistError) {
-          console.log("달걀");
           Swal.fire("회원가입 실패! 입력 정보를 확인하세요!");
         } else {
-          console.log("수박");
-          Swal.fire("회원가입 성공! 로그인 페이지로 이동합니다!");
+          Swal.fire("회원가입 성공! 로그인 페이지로 이동합니다!").then(() => {
+            this.$router.push({ name: "login" });
+          });
         }
       }
     },

@@ -40,24 +40,16 @@ const routes = [
           import(/* webpackChunkName: "demo" */ "../views/Dashboard.vue"),
       },
       {
+        path: "/maps",
+        name: "maps",
+        component: () =>
+          import(/* webpackChunkName: "demo" */ "../views/GoogleMaps.vue"),
+      },
+      {
         path: "icons",
         name: "icons",
         component: () =>
           import(/* webpackChunkName: "demo" */ "../views/Icons.vue"),
-      },
-      {
-        path: "profile",
-        name: "profile",
-        component: () =>
-          import(
-            /* webpackChunkName: "demo" */ "../views/Pages/UserProfile.vue"
-          ),
-      },
-      {
-        path: "maps",
-        name: "maps",
-        component: () =>
-          import(/* webpackChunkName: "demo" */ "../views/GoogleMaps.vue"),
       },
       {
         path: "shop",
@@ -185,28 +177,34 @@ const routes = [
           },
         ],
       },
+    ],
+  },
+  {
+    path: "/member",
+    redirect: "login",
+    component: AuthLayout,
+    children: [
       {
-        path: "/member",
-        redirect: "login",
-        component: AuthLayout,
-        children: [
-          {
-            path: "/login",
-            name: "login",
-            component: () =>
-              import(/* webpackChunkName: "demo" */ "../views/Pages/Login.vue"),
-          },
-          {
-            path: "/memberregister",
-            name: "memberregister",
-            component: () =>
-              import(
-                /* webpackChunkName: "demo" */ "../views/Pages/Register.vue"
-              ),
-          },
-          { path: "*", component: NotFound },
-        ],
+        path: "/login",
+        name: "login",
+        component: () =>
+          import(/* webpackChunkName: "demo" */ "../views/Pages/Login.vue"),
       },
+      {
+        path: "/memberregister",
+        name: "memberregister",
+        component: () =>
+          import(/* webpackChunkName: "demo" */ "../views/Pages/Register.vue"),
+      },
+      {
+        path: "/profile",
+        name: "profile",
+        component: () =>
+          import(
+            /* webpackChunkName: "demo" */ "../views/Pages/UserProfile.vue"
+          ),
+      },
+      { path: "*", component: NotFound },
     ],
   },
 ];

@@ -99,7 +99,7 @@
   </div>
 </template>
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapMutations } from "vuex";
 
 const memberStore = "memberStore";
 
@@ -113,11 +113,15 @@ export default {
       },
     };
   },
+  created() {
+    this.SET_IS_LOGIN_ERROR(false);
+  },
   computed: {
     ...mapState(memberStore, ["isLogin", "isLoginError"]),
   },
   methods: {
     ...mapActions(memberStore, ["userConfirm", "getUserInfo"]),
+    ...mapMutations(memberStore, ["SET_IS_LOGIN_ERROR"]),
     async confirm() {
       await this.userConfirm(this.user);
       let token = sessionStorage.getItem("access-token");
