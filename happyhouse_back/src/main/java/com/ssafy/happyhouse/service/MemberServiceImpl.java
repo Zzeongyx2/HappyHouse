@@ -24,4 +24,25 @@ public class MemberServiceImpl implements MemberService {
 		return memberMapper.userInfo(userid);
 	}
 
+	@Override
+	public boolean registerUser(MemberDto memberDto) throws Exception {
+		return memberMapper.registerUser(memberDto) == 1;
+		
+	}
+
+	@Override
+	public boolean deleteUser(String userid) throws Exception {
+		return memberMapper.deleteUser(userid) == 1;
+	}
+
+	@Override
+	public boolean modifyUser(MemberDto memberDto) throws Exception {
+		return memberMapper.modifyUser(memberDto) == 1;
+	}
+
+	@Override
+	public int idCheck(String userid) throws Exception {
+		return memberMapper.idCheck(userid);
+	}
+
 }
