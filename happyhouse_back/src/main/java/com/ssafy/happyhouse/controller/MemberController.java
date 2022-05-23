@@ -5,23 +5,21 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.happyhouse.dto.MemberDto;
-import com.ssafy.happyhouse.dto.Notice;
 import com.ssafy.happyhouse.service.JwtServiceImpl;
 import com.ssafy.happyhouse.service.MemberService;
 
@@ -101,7 +99,7 @@ public class MemberController {
 
 	@ApiOperation(value = "사용자 등록", notes = "새로운 사용자 정보를 등록한다. 그리고 DB입력 성공여부에 따라 'success' 또는 'fail' 문자열을 반환한다.", response = String.class)
 	@PostMapping("/regist")
-	public ResponseEntity<Map<String,Object>> resiterUser(@RequestBody MemberDto memberDto) throws Exception {
+	public ResponseEntity<Map<String, Object>> resiterUser(@RequestBody MemberDto memberDto) throws Exception {
 		logger.debug("registerUser - 호출");
 		System.out.println(memberDto.toString());
 		Map<String, Object> resultMap = new HashMap<>();
@@ -121,11 +119,102 @@ public class MemberController {
 		}
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);
 	}
-	
+
 	@GetMapping("/idcheck/{userid}")
 	public ResponseEntity<Integer> idCheck(
 			@PathVariable("userid") @ApiParam(value = "인증할 회원의 아이디.", required = true) String userid) throws Exception {
 		return new ResponseEntity<Integer>(memberService.idCheck(userid), HttpStatus.ACCEPTED);
+	}
+
+	@PutMapping("/updateUser")
+	public ResponseEntity<Map<String, Object>> updateUser(@RequestBody MemberDto memberDto) throws Exception {
+		logger.debug("updateUser - 호출");
+		System.out.println(memberDto.toString());
+		Map<String, Object> resultMap = new HashMap<>();
+		HttpStatus status = null;
+		try {
+			if (memberService.updateUser(memberDto)) {
+				resultMap.put("message", SUCCESS);
+				status = HttpStatus.ACCEPTED;
+			} else {
+				resultMap.put("message", FAIL);
+				status = HttpStatus.ACCEPTED;
+			}
+		} catch (Exception e) {
+			logger.error("회원정보 수정 실패 : {}", e);
+			resultMap.put("message", e.getMessage());
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+	}
+
+	@PutMapping("/updatePwd")
+	public ResponseEntity<Map<String, Object>> updatePwd(@RequestBody MemberDto memberDto) throws Exception {
+		logger.debug("updatePwd - 호출");
+		System.out.println(memberDto.toString());
+		Map<String, Object> resultMap = new HashMap<>();
+		HttpStatus status = null;
+		try {
+			if (memberService.updatePassword(memberDto)) {
+				resultMap.put("message", SUCCESS);
+				status = HttpStatus.ACCEPTED;
+			} else {
+				resultMap.put("message", FAIL);
+				status = HttpStatus.ACCEPTED;
+			}
+		} catch (Exception e) {
+			logger.error("비밀번호 수정 실패 : {}", e);
+			resultMap.put("message", e.getMessage());
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+	}
+
+	@DeleteMapping("/deleteUser/{userid}")
+	public ResponseEntity<Map<String, Object>> deleteUser(
+			@PathVariable("userid") @ApiParam(value = "삭제할 회원의 아이디.", required = true) String userid,
+			HttpServletRequest request) {
+		logger.debug("delete 호출 : {} ", userid);
+		Map<String, Object> resultMap = new HashMap<>();
+		HttpStatus status = HttpStatus.ACCEPTED;
+		try {
+			if (memberService.deleteUser(userid)) {
+				resultMap.put("message", SUCCESS);
+				status = HttpStatus.ACCEPTED;
+			} else {
+				resultMap.put("message", FAIL);
+				status = HttpStatus.ACCEPTED;
+			}
+		} catch (Exception e) {
+			logger.error("회원 삭제 실패 : {}", e);
+			resultMap.put("message", e.getMessage());
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+	}
+
+	@PostMapping("/findPwd")
+	public ResponseEntity<Map<String, Object>> findPwd(@RequestBody MemberDto memberDto) throws Exception {
+		logger.debug("findPassword - 호출");
+		System.out.println(memberDto.toString());
+		Map<String, Object> resultMap = new HashMap<>();
+		HttpStatus status = null;
+		try {
+			String answer = memberService.findPWD(memberDto);
+			if (answer.length() > 0) {
+				resultMap.put("answer",answer);
+				resultMap.put("message", SUCCESS);
+				status = HttpStatus.ACCEPTED;
+			} else {
+				resultMap.put("message", FAIL);
+				status = HttpStatus.ACCEPTED;
+			}
+		} catch (Exception e) {
+			logger.error("비밀번호 찾기 실패 : {}", e);
+			resultMap.put("message", e.getMessage());
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
 	}
 	
 }

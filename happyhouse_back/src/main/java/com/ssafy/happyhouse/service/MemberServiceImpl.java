@@ -36,13 +36,24 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public boolean modifyUser(MemberDto memberDto) throws Exception {
-		return memberMapper.modifyUser(memberDto) == 1;
+	public boolean updateUser(MemberDto memberDto) throws Exception {
+		return memberMapper.updateUser(memberDto) == 1;
 	}
 
+	@Override
+	public boolean updatePassword(MemberDto memberDto) throws Exception {
+		return memberMapper.updatePassword(memberDto) == 1;
+	}
+	
 	@Override
 	public int idCheck(String userid) throws Exception {
 		return memberMapper.idCheck(userid);
 	}
+
+	@Override
+	public String findPWD(MemberDto memberDto) throws Exception {
+		return memberMapper.findPWD(memberDto);
+	}
+
 
 }
