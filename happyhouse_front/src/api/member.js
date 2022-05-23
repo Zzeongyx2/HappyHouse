@@ -40,6 +40,13 @@ async function deleteUser(userid, success, fail) {
   await api.delete(`/user/deleteUser/${userid}`).then(success).catch(fail);
 }
 
+async function findUserPwd(user, success, fail) {
+  await api
+    .post(`/user/findPwd`, JSON.stringify(user))
+    .then(success)
+    .catch(fail);
+}
+
 export {
   login,
   findById,
@@ -48,4 +55,5 @@ export {
   updateUser,
   updatePassword,
   deleteUser,
+  findUserPwd,
 };

@@ -6,10 +6,8 @@
         <div class="header-body text-center mb-7">
           <b-row class="justify-content-center">
             <b-col xl="5" lg="6" md="8" class="px-5">
-              <h1 class="text-white">HAPPYHOUSE에 오신걸<br />환영합니다.</h1>
-              <p class="text-lead text-white">
-                아파트 매매 정보와 기능들을 확인하세요.
-              </p>
+              <h1 class="text-white">비밀번호를 잊으셨나요?</h1>
+              <p class="text-lead text-white">이름과 이메일로 확인해보세요!</p>
             </b-col>
           </b-row>
         </div>
@@ -37,36 +35,36 @@
           <b-card no-body class="bg-secondary border-0 mb-0">
             <b-card-body class="px-lg-5 py-lg-5">
               <div class="text-center text-muted mb-4">
-                <small>Happyhouse Login</small>
+                <small>Find Your Password!</small>
               </div>
-              <b-alert show variant="danger" v-if="isLoginError"
-                >아이디 또는 비밀번호를 확인하세요.</b-alert
+              <b-alert show variant="danger" v-if="isFindError"
+                >이름 또는 이메일을 다시 입력해주세요.</b-alert
               >
               <b-form role="form">
                 <base-input
                   alternative
                   class="mb-3"
-                  name="userid"
+                  name="YourID"
                   id="userid"
                   :rules="{ required: true }"
-                  prepend-icon="ni ni-single-02"
-                  placeholder="ID..."
-                  v-model="user.userid"
-                  @keyup.enter="confirm"
+                  prepend-icon="ni ni-circle-08"
+                  placeholder="Your ID..."
+                  v-model="finduser.userid"
+                  @keyup.enter="findByEmail"
                 >
                 </base-input>
 
                 <base-input
                   alternative
                   class="mb-3"
-                  name="userpwd"
-                  id="userpwd"
-                  :rules="{ required: true }"
-                  prepend-icon="ni ni-lock-circle-open"
-                  type="password"
-                  placeholder="Password..."
-                  v-model="user.userpwd"
-                  @keyup.enter="confirm"
+                  name="email"
+                  id="email"
+                  :rules="{ required: true, email: true }"
+                  prepend-icon="ni ni-email-83"
+                  type="email"
+                  placeholder="Your Email..."
+                  v-model="finduser.email"
+                  @keyup.enter="findByEmail"
                 >
                 </base-input>
                 <div class="text-center">
@@ -74,17 +72,25 @@
                     type="primary"
                     native-type="submit"
                     class="my-4"
-                    @click="confirm"
-                    >로그인</base-button
+                    @click="findByEmail"
+                  >
+                    Find</base-button
                   >
                 </div>
               </b-form>
+              <b-alert
+                class="text-center"
+                show
+                variant="danger"
+                v-if="returnPWD.length > 0"
+                >당신의 비밀번호는 :: {{ returnPWD }} ::입니다.</b-alert
+              >
             </b-card-body>
           </b-card>
           <b-row class="mt-3">
             <b-col cols="6">
-              <router-link to="/findpwd" class="text-light"
-                ><small>비밀번호 찾기</small></router-link
+              <router-link to="/login" class="text-light"
+                ><small>로그인 하기</small></router-link
               >
             </b-col>
             <b-col cols="6" class="text-right">
@@ -99,36 +105,33 @@
   </div>
 </template>
 <script>
-import { mapState, mapActions, mapMutations } from "vuex";
-
-const memberStore = "memberStore";
+import { findUserPwd } from "@/api/member";
 
 export default {
-  name: "MemberLogin",
+  name: "FindPassword",
   data() {
     return {
-      user: {
-        userid: null,
-        userpwd: null,
+      finduser: {
+        userid: "",
+        email: "",
       },
+      isFindError: false,
+      returnPWD: "",
     };
   },
-  created() {
-    this.SET_IS_LOGIN_ERROR(false);
-  },
-  computed: {
-    ...mapState(memberStore, ["isLogin", "isLoginError"]),
-  },
   methods: {
-    ...mapActions(memberStore, ["userConfirm", "getUserInfo"]),
-    ...mapMutations(memberStore, ["SET_IS_LOGIN_ERROR"]),
-    async confirm() {
-      await this.userConfirm(this.user);
-      let token = sessionStorage.getItem("access-token");
-      if (this.isLogin) {
-        await this.getUserInfo(token);
-        this.$router.push({ name: "happyhouse" });
-      }
+    async findByEmail() {
+      await findUserPwd(
+        this.finduser,
+        (response) => {
+          if (response.data.message == "success") {
+            this.returnPWD = response.data.answer;
+          }
+        },
+        (error) => {
+          this.FindError = true;
+        }
+      );
     },
   },
 };
