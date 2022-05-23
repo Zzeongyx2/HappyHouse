@@ -43,5 +43,6 @@ create table reply(
 create table interest(
     userid varchar(20),
     dongcode varchar(10),
+    regtime timestamp default current_timestamp,
     primary key (userid, dongcode)
 );
