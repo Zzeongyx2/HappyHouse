@@ -39,7 +39,9 @@
               <div class="text-center text-muted mb-4">
                 <small>Happyhouse Login</small>
               </div>
-
+              <b-alert show variant="danger" v-if="isLoginError"
+                >아이디 또는 비밀번호를 확인하세요.</b-alert
+              >
               <b-form role="form">
                 <base-input
                   alternative
