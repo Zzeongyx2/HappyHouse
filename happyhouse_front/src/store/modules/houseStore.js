@@ -1,4 +1,10 @@
-import { sidoList, gugunList, dongList, houseList } from "@/api/house.js";
+import {
+  sidoList,
+  gugunList,
+  dongList,
+  houseList,
+  houseDetailList,
+} from "@/api/house.js";
 
 const houseStore = {
   namespaced: true,
@@ -92,7 +98,7 @@ const houseStore = {
       const params = {
         dong: dongCode,
       };
-      houseList(
+      houseDetailList(
         params,
         (response) => {
           //   console.log(response.data.response.body.items.item);

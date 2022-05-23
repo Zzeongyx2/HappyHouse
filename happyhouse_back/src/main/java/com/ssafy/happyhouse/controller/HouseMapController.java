@@ -56,4 +56,10 @@ public class HouseMapController {
 		return new ResponseEntity<List<HouseInfoDto>>(haHouseMapService.getAptInDong(dong), HttpStatus.OK);
 	}
 	
+	@GetMapping("/apts")
+	public ResponseEntity<List<HouseInfoDto>> aptList(@RequestParam("dong") String dong) throws Exception {
+		System.out.println(dong);
+		return new ResponseEntity<List<HouseInfoDto>>(haHouseMapService.listHouse(dong), HttpStatus.OK);
+	}
+	
 }

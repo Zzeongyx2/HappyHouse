@@ -1,6 +1,7 @@
 package com.ssafy.happyhouse.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,4 +36,9 @@ public class HouseMapServiceImpl implements HouseMapService {
 		return houseMapMapper.getAptInDong(dong);
 	}
 
+	@Override
+	public List<HouseInfoDto> listHouse(String dong) throws Exception {
+		return houseMapMapper.listHouse(dong);
+	}
+	
 }

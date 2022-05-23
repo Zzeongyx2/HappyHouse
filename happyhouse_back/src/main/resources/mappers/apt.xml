@@ -36,4 +36,33 @@
 		order by aptName
 	</select>
 	
+	<resultMap type="houseInfoDto" id="aptTotalList">
+		<result column="aptCode" property="aptCode"/>
+		<result column="aptName" property="aptName"/>
+		<result column="dongCode" property="dongCode"/>
+		<result column="dongName" property="dongName"/>
+		<result column="buildYear" property="buildYear"/>
+		<result column="jibun" property="jibun"/>
+		<result column="lat" property="lat"/>
+		<result column="lng" property="lng"/>
+		<collection property="aptDetailInfos" column="aptCode=aptCode" javaType="list" ofType="AptDetailDto" select="aptDetailList"/>
+	</resultMap>
+	
+	<select id="listHouse" parameterType="map" resultMap="aptTotalList">
+		select aptCode, aptName, dongCode, dongName, buildYear, jibun, lat, lng
+		from houseinfo h
+		left join sidocode si
+		on left(h.dongcode,2) = left(si.sidocode,2)
+		left join guguncode gu
+		on left(h.dongcode,5) = left(gu.guguncode,5)
+		where dongCode = #{dong} 
+		order by aptName
+	</select>
+	
+	<select id="aptDetailList" resultType="aptDetailDto">
+		select dealAmount, dealYear, dealMonth, dealDay, area, floor
+		from housedeal
+		where aptCode = #{aptCode}
+	</select>
+	
 </mapper>
