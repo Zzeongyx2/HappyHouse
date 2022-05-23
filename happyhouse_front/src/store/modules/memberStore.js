@@ -7,7 +7,12 @@ const memberStore = {
   state: {
     isLogin: false,
     isLoginError: false,
-    userInfo: null,
+    userInfo: {
+      userid: "",
+      username: "",
+      useremail: "",
+    },
+    isAdmin: false,
   },
   getters: {
     checkUserInfo: function (state) {
@@ -21,9 +26,23 @@ const memberStore = {
     SET_IS_LOGIN_ERROR: (state, isLoginError) => {
       state.isLoginError = isLoginError;
     },
+    SET_IS_ADMIN: (state, isAdmin) => {
+      state.isAdmin = isAdmin;
+    },
     SET_USER_INFO: (state, userInfo) => {
-      state.isLogin = true;
-      state.userInfo = userInfo;
+      if (userInfo == null) {
+        state.userInfo = {
+          userid: "",
+          username: "",
+          useremail: "",
+        };
+      } else {
+        state.isLogin = true;
+        state.userInfo = userInfo;
+        if (userInfo.isAdmin) {
+          state.isAdmin = true;
+        }
+      }
     },
   },
   actions: {

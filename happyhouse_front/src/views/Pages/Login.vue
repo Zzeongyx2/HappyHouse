@@ -39,47 +39,44 @@
               <div class="text-center text-muted mb-4">
                 <small>Happyhouse Login</small>
               </div>
-              <validation-observer
-                v-slot="{ handleSubmit }"
-                ref="formValidator"
-              >
-                <b-form role="form" @submit.prevent="handleSubmit(onSubmit)">
-                  <base-input
-                    alternative
-                    class="mb-3"
-                    name="ID"
-                    :rules="{ required: true }"
-                    prepend-icon="ni ni-email-83"
-                    placeholder="ID"
-                    v-model="model.email"
-                  >
-                  </base-input>
 
-                  <base-input
-                    alternative
-                    class="mb-3"
-                    name="Password"
-                    :rules="{ required: true, min: 6 }"
-                    prepend-icon="ni ni-lock-circle-open"
-                    type="password"
-                    placeholder="Password"
-                    v-model="model.password"
-                  >
-                  </base-input>
+              <b-form role="form">
+                <base-input
+                  alternative
+                  class="mb-3"
+                  name="userid"
+                  id="userid"
+                  :rules="{ required: true }"
+                  prepend-icon="ni ni-email-83"
+                  placeholder="ID..."
+                  v-model="user.userid"
+                  @keyup.enter="confirm"
+                >
+                </base-input>
 
-                  <b-form-checkbox v-model="model.rememberMe"
-                    >아이디기억하기 추가예정</b-form-checkbox
+                <base-input
+                  alternative
+                  class="mb-3"
+                  name="userpwd"
+                  id="userpwd"
+                  :rules="{ required: true }"
+                  prepend-icon="ni ni-lock-circle-open"
+                  type="password"
+                  placeholder="Password..."
+                  v-model="user.userpwd"
+                  @keyup.enter="confirm"
+                >
+                </base-input>
+                <div class="text-center">
+                  <base-button
+                    type="primary"
+                    native-type="submit"
+                    class="my-4"
+                    @click="confirm"
+                    >로그인</base-button
                   >
-                  <div class="text-center">
-                    <base-button
-                      type="primary"
-                      native-type="submit"
-                      class="my-4"
-                      >로그인</base-button
-                    >
-                  </div>
-                </b-form>
-              </validation-observer>
+                </div>
+              </b-form>
             </b-card-body>
           </b-card>
           <b-row class="mt-3">
@@ -89,7 +86,7 @@
               >
             </b-col>
             <b-col cols="6" class="text-right">
-              <router-link to="/register" class="text-light"
+              <router-link to="/memberregister" class="text-light"
                 ><small>새로 회원가입하기</small></router-link
               >
             </b-col>
@@ -100,19 +97,32 @@
   </div>
 </template>
 <script>
+import { mapState, mapActions } from "vuex";
+
+const memberStore = "memberStore";
+
 export default {
+  name: "MemberLogin",
   data() {
     return {
-      model: {
-        email: "",
-        password: "",
-        rememberMe: false,
+      user: {
+        userid: null,
+        userpwd: null,
       },
     };
   },
+  computed: {
+    ...mapState(memberStore, ["isLogin", "isLoginError"]),
+  },
   methods: {
-    onSubmit() {
-      // this will be called only after form is valid. You can do api call here to login
+    ...mapActions(memberStore, ["userConfirm", "getUserInfo"]),
+    async confirm() {
+      await this.userConfirm(this.user);
+      let token = sessionStorage.getItem("access-token");
+      if (this.isLogin) {
+        await this.getUserInfo(token);
+        this.$router.push({ name: "dashboard" });
+      }
     },
   },
 };
