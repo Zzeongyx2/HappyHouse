@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.happyhouse.mapper.ReplyMapper">
+
+	<!-- 게시글 전체 조회 -->
+	<select id="selectReply" parameterType="int" resultType="reply">
+		select *
+		from reply
+		where communityno = #{communityno}
+		order by replyno desc
+	</select>
+	
+	<!-- 게시글 상세 조회 -->
+	<select id="selectReplyByNo" resultType="reply">
+		select *
+		from reply 
+		where replyno = #{replyno}
+	</select>
+	
+	<!-- 게시글 등록 -->
+	<insert id="insertReply" parameterType="reply">
+		insert into reply(
+			userid, comment, communityno
+		) values (
+			#{userid}, #{comment}, #{communityno}
+		)
+	</insert>
+	
+	<!-- 게시글 수정 -->
+	<update id="updateReply" parameterType="reply">
+		update reply 
+		   set userid = #{userid}, 
+		   	   comment = #{comment}
+		 where replyno = #{replyno}
+	</update>
+
+	<!-- 게시글 삭제 -->
+	<delete id="deleteReply" parameterType="int">
+		delete 
+		from reply 
+		where replyno = #{replyno}
+	</delete>
+
+</mapper>
+
