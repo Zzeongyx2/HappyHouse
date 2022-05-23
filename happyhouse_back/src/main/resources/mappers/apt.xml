@@ -49,7 +49,7 @@
 	</resultMap>
 	
 	<select id="listHouse" parameterType="map" resultMap="aptTotalList">
-		select aptCode, aptName, dongCode, dongName, buildYear, jibun, lat, lng
+		select h.aptCode, h.aptName, h.dongCode, h.dongName, h.buildYear, h.jibun, h.lat, h.lng, si.sidoname, gu.gugunname
 		from houseinfo h
 		left join sidocode si
 		on left(h.dongcode,2) = left(si.sidocode,2)
