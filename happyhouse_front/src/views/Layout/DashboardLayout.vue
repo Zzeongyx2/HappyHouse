@@ -22,66 +22,71 @@
         </sidebar-item> -->
 
         <sidebar-item
-              :link="{
-                name: 'Apt Maps',
-                path: '/maps',
-                icon: 'ni ni-pin-3 text-orange'
-              }">
+          :link="{
+            name: 'Apt Maps',
+            path: '/maps',
+            icon: 'ni ni-pin-3 text-orange',
+          }"
+        >
         </sidebar-item>
 
         <!-- 주변 상권 따로 한다면 -->
         <sidebar-item
-              :link="{
-                name: 'Shop',
-                path: '/shop',
-                icon: 'ni ni-shop text-yellow'
-                }">
+          :link="{
+            name: 'Shop',
+            path: '/shop',
+            icon: 'ni ni-shop text-yellow',
+          }"
+        >
         </sidebar-item>
 
         <sidebar-item
-                  :link="{
-                    name: 'Login',
-                    path: '/login',
-                    icon: 'ni ni-key-25 text-info'
-                  }">
+          :link="{
+            name: 'Login',
+            path: '/login',
+            icon: 'ni ni-key-25 text-info',
+          }"
+        >
         </sidebar-item>
 
         <sidebar-item
-                  :link="{
-                    name: 'Register',
-                    path: '/register',
-                    icon: 'ni ni-circle-08 text-pink'
-                  }">
+          :link="{
+            name: 'Register',
+            path: '/memberregister',
+            icon: 'ni ni-circle-08 text-pink',
+          }"
+        >
         </sidebar-item>
-
       </template>
 
       <template slot="links-board">
         <sidebar-item
-                  :link="{
-                    name: 'Notice',
-                    path: '/notice',
-                    icon: 'ni ni-notification-70'
-                  }">
+          :link="{
+            name: 'Notice',
+            path: '/notice',
+            icon: 'ni ni-notification-70',
+          }"
+        >
         </sidebar-item>
 
         <sidebar-item
-                  :link="{
-                    name: 'Q&A',
-                    path: '/qna',
-                    icon: 'ni ni-send'
-                  }">
+          :link="{
+            name: 'Q&A',
+            path: '/qna',
+            icon: 'ni ni-send',
+          }"
+        >
         </sidebar-item>
 
         <sidebar-item
-                  :link="{
-                    name: 'Community',
-                    path: '/community',
-                    icon: 'ni ni-chat-round'
-                  }">
+          :link="{
+            name: 'Community',
+            path: '/community',
+            icon: 'ni ni-chat-round',
+          }"
+        >
         </sidebar-item>
       </template>
-
 
       <!-- <template slot="links-after">
         <hr class="my-3">
@@ -119,49 +124,48 @@
   </div>
 </template>
 <script>
-  /* eslint-disable no-new */
-  import PerfectScrollbar from 'perfect-scrollbar';
-  import 'perfect-scrollbar/css/perfect-scrollbar.css';
+/* eslint-disable no-new */
+import PerfectScrollbar from "perfect-scrollbar";
+import "perfect-scrollbar/css/perfect-scrollbar.css";
 
-  function hasElement(className) {
-    return document.getElementsByClassName(className).length > 0;
+function hasElement(className) {
+  return document.getElementsByClassName(className).length > 0;
+}
+
+function initScrollbar(className) {
+  if (hasElement(className)) {
+    new PerfectScrollbar(`.${className}`);
+  } else {
+    // try to init it later in case this component is loaded async
+    setTimeout(() => {
+      initScrollbar(className);
+    }, 100);
   }
+}
 
-  function initScrollbar(className) {
-    if (hasElement(className)) {
-      new PerfectScrollbar(`.${className}`);
-    } else {
-      // try to init it later in case this component is loaded async
-      setTimeout(() => {
-        initScrollbar(className);
-      }, 100);
-    }
-  }
+import DashboardNavbar from "./DashboardNavbar.vue";
+import ContentFooter from "./ContentFooter.vue";
+import DashboardContent from "./Content.vue";
+import { FadeTransition } from "vue2-transitions";
 
-  import DashboardNavbar from './DashboardNavbar.vue';
-  import ContentFooter from './ContentFooter.vue';
-  import DashboardContent from './Content.vue';
-  import { FadeTransition } from 'vue2-transitions';
-
-  export default {
-    components: {
-      DashboardNavbar,
-      ContentFooter,
-      DashboardContent,
-      FadeTransition
-    },
-    methods: {
-      initScrollbar() {
-        let isWindows = navigator.platform.startsWith('Win');
-        if (isWindows) {
-          initScrollbar('sidenav');
-        }
+export default {
+  components: {
+    DashboardNavbar,
+    ContentFooter,
+    DashboardContent,
+    FadeTransition,
+  },
+  methods: {
+    initScrollbar() {
+      let isWindows = navigator.platform.startsWith("Win");
+      if (isWindows) {
+        initScrollbar("sidenav");
       }
     },
-    mounted() {
-      this.initScrollbar()
-    }
-  };
+  },
+  mounted() {
+    this.initScrollbar();
+  },
+};
 </script>
-<style lang="scss">
-</style>
+<style lang="scss"></style>
