@@ -27,21 +27,21 @@ const onlyAuthUser = async (to, from, next) => {
 const routes = [
   {
     path: "/",
-    redirect: "dashboard",
+    redirect: "happyhouse",
     component: DashboardLayout,
     children: [
       {
-        path: "/dashboard",
-        name: "dashboard",
+        path: "/happyhouse",
+        name: "happyhouse",
         // route level code-splitting
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
         component: () =>
-          import(/* webpackChunkName: "demo" */ "../views/Dashboard.vue"),
+          import(/* webpackChunkName: "demo" */ "../views/HappyHouse.vue"),
       },
       {
-        path: "/maps",
-        name: "maps",
+        path: "/aps",
+        name: "aps",
         component: () =>
           import(/* webpackChunkName: "demo" */ "../views/GoogleMaps.vue"),
       },
@@ -56,6 +56,14 @@ const routes = [
         name: "shop",
         component: () =>
           import(/* webpackChunkName: "demo" */ "../views/ShopView.vue"),
+      },
+      {
+        path: "/profile",
+        name: "profile",
+        component: () =>
+          import(
+            /* webpackChunkName: "demo" */ "../views/Pages/UserProfile.vue"
+          ),
       },
       {
         path: "notice",
@@ -196,12 +204,13 @@ const routes = [
         component: () =>
           import(/* webpackChunkName: "demo" */ "../views/Pages/Register.vue"),
       },
+
       {
-        path: "/profile",
-        name: "profile",
+        path: "/findpwd",
+        name: "findpwd",
         component: () =>
           import(
-            /* webpackChunkName: "demo" */ "../views/Pages/UserProfile.vue"
+            /* webpackChunkName: "demo" */ "../views/Pages/FindPassword.vue"
           ),
       },
       { path: "*", component: NotFound },

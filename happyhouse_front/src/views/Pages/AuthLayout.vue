@@ -9,7 +9,7 @@
     >
       <div slot="brand" class="navbar-wrapper">
         <b-navbar-brand to="/">
-          <img src="img/brand/white.png" />
+          <img src="img/brand/happyhouse_logo.png" />
         </b-navbar-brand>
       </div>
 
@@ -18,14 +18,14 @@
           <b-row>
             <b-col cols="6" class="collapse-brand">
               <router-link to="/">
-                <img src="img/brand/green.png" />
+                <img src="img/brand/happyhouse_logo.png" />
               </router-link>
             </b-col>
             <b-col cols="6" class="collapse-close">
               <button
                 type="button"
                 class="navbar-toggler"
-                @click="showMenu = false"
+                @click="toggleNavbar"
               >
                 <span></span>
                 <span></span>
@@ -34,7 +34,7 @@
           </b-row>
         </div>
         <b-navbar-nav class="align-items-lg-center ml-lg-auto">
-          <b-nav-item to="/dashboard">
+          <b-nav-item to="/happyhouse">
             <i class="ni ni-planet"></i>
             <span class="nav-link-inner--text">Main</span>
           </b-nav-item>
@@ -61,12 +61,12 @@
         <b-row align-v="center" class="justify-content-xl-between">
           <b-col xl="6">
             <div class="copyright text-center text-xl-left text-muted">
-              © {{ year }}
+              © {{ year }} SSAFY 7th
               <a
-                href="https://www.creative-tim.com"
+                href="https://www.ssafy.com"
                 class="font-weight-bold ml-1"
                 target="_blank"
-                >Creative Tim</a
+                >SEOUL 18 TEAM 11</a
               >
             </div>
           </b-col>
@@ -74,10 +74,8 @@
             <b-nav
               class="nav-footer justify-content-center justify-content-xl-end"
             >
-              <b-nav-item href="https://www.creative-tim.com" target="_blank">
-                Creative Tim
-              </b-nav-item>
-              <b-nav-item
+              <b-nav-item href="#" target="_blank"> 정윤영 최진우 </b-nav-item>
+              <!-- <b-nav-item
                 href="https://www.creative-tim.com/presentation"
                 target="_blank"
               >
@@ -91,7 +89,7 @@
                 target="_blank"
               >
                 License
-              </b-nav-item>
+              </b-nav-item> -->
             </b-nav>
           </b-col>
         </b-row>
@@ -135,7 +133,7 @@ export default {
     },
     closeMenu() {
       document.body.classList.remove("nav-open");
-      this.showMenu = false;
+      this.showMenu = !this.showMenu;
     },
     setBackgroundColor() {
       document.body.classList.add("bg-default");

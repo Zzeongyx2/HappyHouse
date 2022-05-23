@@ -6,7 +6,7 @@
         <sidebar-item
           :link="{
             name: 'Main',
-            path: '/dashboard',
+            path: '/happyhouse',
             icon: 'ni ni-tv-2 text-primary',
           }"
         >
@@ -23,8 +23,8 @@
 
         <sidebar-item
           :link="{
-            name: 'Apt Maps',
-            path: '/maps',
+            name: 'Apt',
+            path: '/aps',
             icon: 'ni ni-pin-3 text-orange',
           }"
         >
@@ -41,6 +41,7 @@
         </sidebar-item>
 
         <sidebar-item
+          v-if="!isLogin"
           :link="{
             name: 'Login',
             path: '/login',
@@ -50,6 +51,7 @@
         </sidebar-item>
 
         <sidebar-item
+          v-if="!isLogin"
           :link="{
             name: 'Register',
             path: '/memberregister',
@@ -127,6 +129,8 @@
 /* eslint-disable no-new */
 import PerfectScrollbar from "perfect-scrollbar";
 import "perfect-scrollbar/css/perfect-scrollbar.css";
+import { mapState } from "vuex";
+const memberStore = "memberStore";
 
 function hasElement(className) {
   return document.getElementsByClassName(className).length > 0;
@@ -162,6 +166,9 @@ export default {
         initScrollbar("sidenav");
       }
     },
+  },
+  computed: {
+    ...mapState(memberStore, ["isLogin"]),
   },
   mounted() {
     this.initScrollbar();

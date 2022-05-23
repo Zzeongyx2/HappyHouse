@@ -67,6 +67,14 @@
             <i class="ni ni-single-02"></i>
             <span>Login</span>
           </router-link>
+          <router-link
+            v-if="!isLogin"
+            to="/memberregister"
+            class="dropdown-item"
+          >
+            <i class="ni ni-single-02"></i>
+            <span>Sign in</span>
+          </router-link>
           <router-link v-if="isLogin" to="/profile" class="dropdown-item">
             <i class="ni ni-single-02"></i>
             <span>My profile</span>

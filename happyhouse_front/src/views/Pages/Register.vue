@@ -45,7 +45,7 @@
                   <base-input
                     alternative
                     class="mb-3"
-                    prepend-icon="ni ni-hat-3"
+                    prepend-icon="ni ni-single-02"
                     placeholder="ID"
                     name="ID"
                     @keyup="GoidCheck"
@@ -56,7 +56,7 @@
                   <base-input
                     alternative
                     class="mb-3"
-                    prepend-icon="ni ni-hat-3"
+                    prepend-icon="ni ni-circle-08"
                     placeholder="Name"
                     name="Name"
                     :rules="{ required: true }"
@@ -90,7 +90,7 @@
                   <base-input
                     alternative
                     class="mb-3"
-                    prepend-icon="ni ni-lock-circle-open"
+                    prepend-icon="ni ni-key-25"
                     placeholder="password check..."
                     type="password"
                     name="Passwordchk"
@@ -126,6 +126,18 @@
               </validation-observer>
             </b-card-body>
           </b-card>
+          <b-row class="mt-3">
+            <b-col cols="6">
+              <router-link to="/findpwd" class="text-light"
+                ><small>비밀번호 찾기</small></router-link
+              >
+            </b-col>
+            <b-col cols="6" class="text-right">
+              <router-link to="/login" class="text-light"
+                ><small>로그인하러 가기</small></router-link
+              >
+            </b-col>
+          </b-row>
         </b-col>
       </b-row>
     </b-container>
