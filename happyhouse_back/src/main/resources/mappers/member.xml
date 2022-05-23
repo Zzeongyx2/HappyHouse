@@ -31,18 +31,27 @@
 	
 	<update id="updateUser" parameterType="memberDto">
 		update user 
-		   set userpwd = #{userpwd}, 
-		   	   username = #{username}, 
-		   	   email = #{email},
-		   	   isadmin = #{isadmin},
+		   set username = #{username}, 
+		   	   email = #{email}
 		 where userid = #{userid}
 	</update>
 
+	<update id="updatePassword" parameterType="map">
+		update user 
+		   set userpwd = #{userpwd} 
+		 where userid = #{userid}
+	</update>
 	
 	<delete id="deleteUser" parameterType="String">
 		delete 
 		from user
 		where userid = #{userid}
 	</delete>
+	
+	<select id="findPWD" parameterType="memberDto" resultType="String">
+		select userpwd
+		from user
+		where userid = #{userid} and email = #{email}
+	</select>
 	
 </mapper>
