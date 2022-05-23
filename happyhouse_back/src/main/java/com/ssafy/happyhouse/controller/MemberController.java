@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +16,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.happyhouse.dto.MemberDto;
+import com.ssafy.happyhouse.dto.Notice;
 import com.ssafy.happyhouse.service.JwtServiceImpl;
 import com.ssafy.happyhouse.service.MemberService;
 
@@ -95,4 +99,33 @@ public class MemberController {
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);
 	}
 
+	@ApiOperation(value = "사용자 등록", notes = "새로운 사용자 정보를 등록한다. 그리고 DB입력 성공여부에 따라 'success' 또는 'fail' 문자열을 반환한다.", response = String.class)
+	@PostMapping("/regist")
+	public ResponseEntity<Map<String,Object>> resiterUser(@RequestBody MemberDto memberDto) throws Exception {
+		logger.debug("registerUser - 호출");
+		System.out.println(memberDto.toString());
+		Map<String, Object> resultMap = new HashMap<>();
+		HttpStatus status = null;
+		try {
+			if (memberService.registerUser(memberDto)) {
+				resultMap.put("message", SUCCESS);
+				status = HttpStatus.ACCEPTED;
+			} else {
+				resultMap.put("message", FAIL);
+				status = HttpStatus.ACCEPTED;
+			}
+		} catch (Exception e) {
+			logger.error("회원가입 실패 : {}", e);
+			resultMap.put("message", e.getMessage());
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+	}
+	
+	@GetMapping("/idcheck/{userid}")
+	public ResponseEntity<Integer> idCheck(
+			@PathVariable("userid") @ApiParam(value = "인증할 회원의 아이디.", required = true) String userid) throws Exception {
+		return new ResponseEntity<Integer>(memberService.idCheck(userid), HttpStatus.ACCEPTED);
+	}
+	
 }

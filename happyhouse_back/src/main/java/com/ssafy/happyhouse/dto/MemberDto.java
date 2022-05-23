@@ -17,15 +17,15 @@ public class MemberDto {
 	@ApiModelProperty(value = "회원 가입일")
 	private String regtime;
 	@ApiModelProperty(value= "관리자 권한")
-	private boolean isAdmin;
+	private boolean isadmin;
 	
 
-	public boolean isAdmin() {
-		return isAdmin;
+	public boolean isadmin() {
+		return isadmin;
 	}
 
 	public void setAdmin(boolean isAdmin) {
-		this.isAdmin = isAdmin;
+		this.isadmin = isAdmin;
 	}
 
 	public String getUserid() {
@@ -73,7 +73,7 @@ public class MemberDto {
 	@Override
 	public String toString() {
 		return "MemberDto [userid=" + userid + ", username=" + username + ", userpwd=" + userpwd + ", email=" + email
-				+ ", regtime=" + regtime + ", isAdmin=" + isAdmin + "]";
+				+ ", regtime=" + regtime + ", isadmin=" + isadmin + "]";
 	}
 
 	
