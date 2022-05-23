@@ -39,3 +39,9 @@ create table reply(
     regtime timestamp default current_timestamp,
     foreign key reply(communityno) references community(communityno)
 );
+
+create table interest(
+    userid varchar(20),
+    dongcode varchar(10),
+    primary key (userid, dongcode)
+);
