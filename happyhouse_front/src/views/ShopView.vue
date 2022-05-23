@@ -4,15 +4,10 @@
     </base-header>
 
     <b-container fluid class="mt--7">
-      <b-row>
-        <b-col>
-          <b-card no-body class="border-0">
-            <shop-map />
-            <!-- <div id="map-custom" class="map-canvas"
-                 style="height: 600px;"></div> -->
-          </b-card>
-        </b-col>
-      </b-row>
+          <shop-map />
+          <!-- <b-card no-body class="border-0"> -->
+            <!-- <shop-map /> -->
+          <!-- </b-card> -->
     </b-container>
   </div>
 </template>

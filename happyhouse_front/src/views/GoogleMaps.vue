@@ -109,7 +109,6 @@
                 <b-col>
                   <h3 class="mb-0">APT LIST</h3>
                 </b-col>
-
                 <b-col class="text-right">
                   <a href="#!" class="btn btn-sm btn-primary">기타</a>
                 </b-col>
@@ -124,8 +123,7 @@
             >
               <el-table-column type="expand">
                 <template #default="props">
-                  <div m="4">
-                    <p m="t-0 b-2">
+                  <div m="4" font-family="sans-serif" font-size="15px">
                       주소 :
                       {{
                         props.row.sidoName +
@@ -136,8 +134,8 @@
                         ` ` +
                         props.row.jibun
                       }}
-                    </p>
-                    <p m="t-0 b-2">건축년도 : {{ props.row.buildYear }}</p>
+                    <br/>
+                    건축년도 : {{ props.row.buildYear }}
                   </div>
                 </template>
               </el-table-column>

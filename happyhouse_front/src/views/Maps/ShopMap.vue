@@ -1,48 +1,105 @@
 <template>
     <div>
-        <div id="hAddr">
-            {{address}}
-            <b-button size="sm" style="margin:3px">❤</b-button>
-        </div>
-        <div class="map-wrap">
-            <div id="map"></div>
-            <ul id="category">
-                <li id="BK9" data-order="0"> 
-                    <span class="category_bg bank"></span>
-                    은행
-                </li>       
-                <li id="MT1" data-order="1"> 
-                    <span class="category_bg mart"></span>
-                    마트
-                </li>  
-                <li id="PM9" data-order="2"> 
-                    <span class="category_bg pharmacy"></span>
-                    약국
-                </li>  
-                <li id="OL7" data-order="3"> 
-                    <span class="category_bg oil"></span>
-                    주유소
-                </li>  
-                <li id="CE7" data-order="4"> 
-                    <span class="category_bg cafe"></span>
-                    카페
-                </li>  
-                <li id="CS2" data-order="5"> 
-                    <span class="category_bg store"></span>
-                    편의점
-                </li>         
-            </ul>
-            <ul id="checkbox">
-                <b-form-checkbox v-model="isTrafficShow" @change="trafficinfo">교통 정보</b-form-checkbox>
-                <b-form-checkbox v-model="isBicycleShow" @change="bicycleinfo">자전거 도로</b-form-checkbox>
-            </ul>
-        </div>
+      <b-row>
+        <b-col xl="8">
+          <b-card no-body class="border-0">
+            <div class="map-wrap">
+                <div id="map"></div>
+                <ul id="category">
+                    <li id="BK9" data-order="0"> 
+                        <span class="category_bg bank"></span>
+                        은행
+                    </li>       
+                    <li id="MT1" data-order="1"> 
+                        <span class="category_bg mart"></span>
+                        마트
+                    </li>  
+                    <li id="PM9" data-order="2"> 
+                        <span class="category_bg pharmacy"></span>
+                        약국
+                    </li>  
+                    <li id="OL7" data-order="3"> 
+                        <span class="category_bg oil"></span>
+                        주유소
+                    </li>  
+                    <li id="CE7" data-order="4"> 
+                        <span class="category_bg cafe"></span>
+                        카페
+                    </li>  
+                    <li id="CS2" data-order="5"> 
+                        <span class="category_bg store"></span>
+                        편의점
+                    </li>         
+                </ul>
+                <ul id="checkbox">
+                    <b-form-checkbox v-model="isTrafficShow" @change="trafficinfo">교통 정보</b-form-checkbox>
+                    <b-form-checkbox v-model="isBicycleShow" @change="bicycleinfo">자전거 도로</b-form-checkbox>
+                </ul>
+            </div>
+          </b-card>
+        </b-col>
+        <b-col xl="4">
+          <b-card no-body class="border-0">
+            <template v-slot:header>
+              <b-row align-v="center">
+                <b-col xl="10">
+                  <h3 class="mb-0">{{address}}</h3>
+                </b-col>
+                <b-col class="text-right" xl="2">
+                    <b-button size="sm" style="margin:3px">❤</b-button>
+                </b-col>
+              </b-row>
+            </template>
+            <el-table
+              class="table-responsive table"
+              :data="list"
+              :cell-style="{ height: '40px' }"
+              header-row-class-name="thead-light"
+              v-el-table-infinite-scroll=""
+            >
+              <el-table-column type="expand">
+                <template #default="props">
+                  <div m="4" font-family="sans-serif" font-size="15px">
+                    주소 : {{ props.row.road_address_name }}
+                    <br/>
+                    <div v-if="props.row.phone">전화 : {{ props.row.phone }}</div>
+                    <a :href="props.row.place_url" target="_blank">카카오맵 검색</a>
+                  </div>
+                </template>
+              </el-table-column>
+               <el-table-column
+                label="Name"
+                min-width="110px"
+                prop="place_name"
+                style="max-height: 750px"
+              >
+                <template v-slot="{ row }">
+                  <div class="font-weight-600">{{ row.place_name }}</div>
+                </template>
+              </el-table-column>
+            </el-table>
+          </b-card>
+        </b-col>
+      </b-row>
     </div>
 </template>
 
 <script>
+import {
+  Table,
+  TableColumn,
+  Select, Option 
+} from "element-ui";
+import elTableInfiniteScroll from "el-table-infinite-scroll";
+
 export default {
   name: "ShopMap",
+  components: {
+    [Select.name]: Select,
+    [Option.name]: Option,
+    [Table.name]: Table,
+    [TableColumn.name]: TableColumn,
+  },
   data() {
     return {
       infowindow: null,
@@ -63,6 +120,9 @@ export default {
       script.src = "//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=48c5481becc496317193e6ddc98de584&libraries=services";
       document.head.appendChild(script);
     }
+  },
+  directives: {
+    "el-table-infinite-scroll": elTableInfiniteScroll,
   },
   methods: {
     trafficinfo(){
@@ -177,6 +237,8 @@ export default {
       function placesSearchCB(data, status) {
         if (status === kakao.maps.services.Status.OK) {
           // 정상적으로 검색이 완료됐으면 지도에 마커를 표출합니다
+          self.list = data;
+          console.log("list", self.list);
           displayPlaces(data);
         } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
           // 검색결과가 없는경우 해야할 처리가 있다면 이곳에 작성해 주세요
@@ -233,8 +295,6 @@ export default {
         marker.setMap(self.map); // 지도 위에 마커를 표출합니다
         markers.push(marker); // 배열에 생성된 마커를 추가합니다
         // console.log("=====marker ",marker);
-        console.log("----pos", position);
-        self.list.push(position);
         return marker;
       }
 
@@ -244,6 +304,7 @@ export default {
           markers[i].setMap(null);
         }
         markers = [];
+        self.list = [];
       }
 
       // 클릭한 마커에 대한 장소 상세정보를 커스텀 오버레이로 표시하는 함수입니다
@@ -344,16 +405,18 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
+
 #map {
+  border: 5px;
   width: 100%;
-  height: 650px;
+  height: 500px;
 }
 
 .map_wrap,
 .map_wrap * {
     margin:0;
     padding:0;
-    font-family:'Malgun Gothic',dotum,'돋움',sans-serif;
+    font-family:sans-serif;
     font-size:12px;
 }
 .map_wrap {
