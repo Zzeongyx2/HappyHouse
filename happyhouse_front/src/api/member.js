@@ -22,4 +22,30 @@ async function idCheck(userid, success, fail) {
   await api.get(`/user/idcheck/${userid}`).then(success).catch(fail);
 }
 
-export { login, findById, regist, idCheck };
+async function updateUser(user, success, fail) {
+  await api
+    .put(`/user/updateUser`, JSON.stringify(user))
+    .then(success)
+    .catch(fail);
+}
+
+async function updatePassword(user, success, fail) {
+  await api
+    .put(`/user/updatePwd`, JSON.stringify(user))
+    .then(success)
+    .catch(fail);
+}
+
+async function deleteUser(userid, success, fail) {
+  await api.delete(`/user/deleteUser/${userid}`).then(success).catch(fail);
+}
+
+export {
+  login,
+  findById,
+  regist,
+  idCheck,
+  updateUser,
+  updatePassword,
+  deleteUser,
+};
