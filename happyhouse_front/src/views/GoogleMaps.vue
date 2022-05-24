@@ -124,17 +124,17 @@
               <el-table-column type="expand">
                 <template #default="props">
                   <div m="4" font-family="sans-serif" font-size="15px">
-                      주소 :
-                      {{
-                        props.row.sidoName +
-                        ` ` +
-                        props.row.gugunName +
-                        ` ` +
-                        props.row.dongName +
-                        ` ` +
-                        props.row.jibun
-                      }}
-                    <br/>
+                    주소 :
+                    {{
+                      props.row.sidoName +
+                      ` ` +
+                      props.row.gugunName +
+                      ` ` +
+                      props.row.dongName +
+                      ` ` +
+                      props.row.jibun
+                    }}
+                    <br />
                     건축년도 : {{ props.row.buildYear }}
                   </div>
                 </template>
@@ -327,7 +327,7 @@ export default {
       /* global kakao */
       script.onload = () => kakao.maps.load(this.initMap);
       script.src =
-        "//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=915cffed372954b7b44804ed422b9cf0";
+        "//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=48c5481becc496317193e6ddc98de584&libraries=services";
       document.head.appendChild(script);
     }
   },
