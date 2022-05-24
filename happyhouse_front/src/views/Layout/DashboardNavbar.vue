@@ -146,8 +146,8 @@ export default {
       this.SET_USER_INFO(null);
       this.SET_IS_ADMIN(false);
       sessionStorage.removeItem("access-token");
-      if (this.$route.path != "/dashboard")
-        this.$router.push({ name: "dashboard" });
+      if (this.$route.path != "/happyhouse")
+        this.$router.push({ name: "happyhouse" });
     },
   },
 };
