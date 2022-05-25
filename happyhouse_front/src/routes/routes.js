@@ -189,7 +189,7 @@ const routes = [
   },
   {
     path: "/member",
-    redirect: "login",
+    redirect: "memberregister",
     component: AuthLayout,
     children: [
       {
