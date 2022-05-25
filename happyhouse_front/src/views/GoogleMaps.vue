@@ -73,6 +73,7 @@
     <b-col class="sm-3" align="left">
       <b-button variant="outline-primary" @click="sendKeyword">검색</b-button>
     </b-col> -->
+
         <b-col cols="2">
           <b-form-select
             v-model="sidoCode"
@@ -94,6 +95,7 @@
             @change="searchApt"
           ></b-form-select>
         </b-col>
+
         <b-col cols="6"> <b-card></b-card> </b-col>
       </b-row>
     </base-header>

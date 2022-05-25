@@ -4,44 +4,49 @@
       <!-- Card stats -->
       <b-row>
         <b-col xl="4" md="6">
-          <stats-card title="전체 회원수"
-                      type="gradient-red"
-                      :sub-title="users.calcUsers"
-                      icon="ni ni-single-02"
-                      class="mb-4">
-
+          <stats-card
+            title="전체 회원수"
+            type="gradient-red"
+            :sub-title="users.calcUsers"
+            icon="ni ni-single-02"
+            class="mb-4"
+          >
             <template slot="footer">
-              <span class="text-success mr-2">{{users.calcUsers}}</span>
+              <span class="text-success mr-2">{{ users.calcUsers }}</span>
               <span class="text-nowrap">members are using HAPPY HOUSE</span>
             </template>
           </stats-card>
         </b-col>
 
         <b-col xl="4" md="6">
-          <stats-card :title="title"
-                      type="gradient-orange"
-                      :sub-title="String(userInfo.visited)"
-                      icon="ni ni-favourite-28"
-                      class="mb-4">
-
+          <stats-card
+            :title="title"
+            type="gradient-orange"
+            :sub-title="String(userInfo.visited)"
+            icon="ni ni-favourite-28"
+            class="mb-4"
+          >
             <template slot="footer">
-              <span class="text-nowrap">{{userInfo.username}} visited </span>
-              <span class="text-success mr-2">{{userInfo.visited}}</span>
+              <span class="text-nowrap">{{ userInfo.username }} visited </span>
+              <span class="text-success mr-2">{{ userInfo.visited }}</span>
               <span class="text-nowrap">times in total</span>
             </template>
           </stats-card>
         </b-col>
 
         <b-col xl="4" md="6">
-          <stats-card title="누적 방문수"
-                      type="gradient-green"
-                      :sub-title="users.totalVisited"
-                      icon="ni ni-trophy"
-                      class="mb-4">
-
+          <stats-card
+            title="누적 방문수"
+            type="gradient-green"
+            :sub-title="users.totalVisited"
+            icon="ni ni-trophy"
+            class="mb-4"
+          >
             <template slot="footer">
-              <span class="text-nowrap">The total number of visits for all members is </span>
-              <span class="text-success mr-2">{{users.totalVisited}}</span>
+              <span class="text-nowrap"
+                >The total number of visits for all members is
+              </span>
+              <span class="text-success mr-2">{{ users.totalVisited }}</span>
             </template>
           </stats-card>
         </b-col>
@@ -67,8 +72,8 @@
 // Tables
 import NewsTable from "./Dashboard/NewsTable";
 import SubscriptionTable from "./Dashboard/SubscriptionTable.vue";
-import {calcData} from "@/api/member";
-import {mapState} from "vuex";
+import { calcData } from "@/api/member";
+import { mapState } from "vuex";
 
 const memberStore = "memberStore";
 
@@ -80,24 +85,24 @@ export default {
   data() {
     return {
       users: {
-        calcUsers:0,
-        totalVisited:0,
+        calcUsers: "0",
+        totalVisited: "0",
       },
-    }
+    };
   },
   computed: {
     ...mapState(memberStore, ["userInfo"]),
-    title(){
+    title() {
       return this.userInfo.username + "님의 방문수";
-    }
+    },
   },
   mounted() {
     calcData(
-      ({data}) => {
+      ({ data }) => {
         this.users = data;
         console.log("=====", data);
       },
-      () => {},
+      () => {}
     );
   },
 };
