@@ -70,11 +70,7 @@
                 >
                 </base-input>
                 <div class="text-center">
-                  <base-button
-                    type="primary"
-                    native-type="submit"
-                    class="my-4"
-                    @click="confirm"
+                  <base-button type="primary" class="my-4" @click="confirm"
                     >로그인</base-button
                   >
                 </div>
