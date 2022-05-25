@@ -15,4 +15,7 @@ public interface MemberService {
 	public boolean deleteUser(String userid) throws Exception;
 	public int idCheck(String userid) throws Exception;
 	public String findPWD(MemberDto memberDto) throws Exception;
+	public int calcUsers() throws Exception;
+	public int updateVisited(String userid) throws Exception;
+	public int getTotalVisited() throws Exception;
 }

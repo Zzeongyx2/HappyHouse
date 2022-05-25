@@ -15,4 +15,7 @@ public interface MemberMapper {
 	public int deleteUser(String userid) throws SQLException;
 	public int idCheck(String userid) throws SQLException;
 	public String findPWD(MemberDto memberDto) throws SQLException;
+	public int calcUsers() throws SQLException;
+	public int updateVisited(String userid) throws SQLException;
+	public int getTotalVisited() throws SQLException;
 }

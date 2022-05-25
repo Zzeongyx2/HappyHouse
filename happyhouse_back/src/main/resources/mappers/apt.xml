@@ -65,4 +65,28 @@
 		where aptCode = #{aptCode}
 	</select>
 	
+	<insert id="insertRegion" parameterType="region">
+		insert into interest(userid, sido, gugun, dong, dongcode)
+		values (#{userid}, #{sido}, #{gugun}, #{dong}, #{dongcode})
+	</insert>
+
+	<select resultType="region" id="selectRegion" parameterType="string">
+		select * 
+		from interest 
+		where userid = #{userid} 
+		order by regtime
+	</select>
+	
+	<delete id="deleteRegion" parameterType="region">
+		delete 
+		from interest
+		where (sido = #{sido} and gugun = #{gugun} and dong = #{dong} and userid = #{userid})
+	</delete>
+	
+	<select id="selectDongcode" parameterType="region" resultType="string">
+		select dongCode
+		from dongcode
+		where (sidoName = #{sido} and gugunName = #{gugun} and dongName = #{dong})
+	</select>
+	
 </mapper>
