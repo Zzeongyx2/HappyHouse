@@ -41,8 +41,11 @@
 import { writeQuestion } from "@/api/qna";
 import { Table, TableColumn } from "element-ui";
 import Swal from "sweetalert2";
+import {mapState} from "vuex";
 // style import
 import "sweetalert2/dist/sweetalert2.css";
+
+const memberStore = "memberStore";
 
 export default {
   name: "QuestionDetail",
@@ -53,9 +56,16 @@ export default {
   data() {
     return {
       article: {
-        userid: "ssafy",
+        userid: "",
       },
     };
+  },
+  created() {
+    this.article.userid = this.userInfo.userid;
+    console.log(this.article.userid);
+  },
+  computed: {
+    ...mapState(memberStore, ["userInfo"]),
   },
   methods: {
     registerArticle() {

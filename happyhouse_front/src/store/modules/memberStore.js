@@ -1,19 +1,29 @@
 import jwt_decode from "jwt-decode";
-import { login } from "@/api/member.js";
-import { findById } from "../../api/member";
-import { regist } from "@/api/member";
-import { idCheck } from "../../api/member";
+import {
+  login,
+  findById,
+  regist,
+  idCheck,
+  updateUser,
+  updatePassword,
+  deleteUser,
+} from "@/api/member.js";
+
 const memberStore = {
   namespaced: true,
   state: {
     isLogin: false,
     isLoginError: false,
     isRegistError: false,
+    isUpdateError: false,
+    isDeleteError: false,
     CanUsable: false,
     userInfo: {
       userid: "",
       username: "",
       useremail: "",
+      isadmin: false,
+      visited: 0,
     },
     isAdmin: false,
   },
@@ -44,20 +54,35 @@ const memberStore = {
           userid: "",
           username: "",
           useremail: "",
+          isadmin: false,
+          visited: 0,
         };
       } else {
         state.isLogin = true;
         state.userInfo = userInfo;
-        if (userInfo.isAdmin) {
+        console.log(userInfo);
+        if (userInfo.isadmin) {
           state.isAdmin = true;
         }
       }
     },
+    SET_IS_UPDATE_ERROR: (state, isUpdateError) => {
+      state.isUpdateError = isUpdateError;
+    },
+    SET_IS_DELETE_ERROR: (state, isDeleteError) => {
+      state.isDeleteError = isDeleteError;
+    },
     CLEAR_CAN_USABLE: (state) => {
-      state.CanUsable = null;
+      state.CanUsable = true;
     },
     CLEAR_IS_REGIST_ERROR: (state) => {
       state.isRegistError = false;
+    },
+    CLEAR_IS_UPDATE_ERROR: (state) => {
+      state.isUpdateError = false;
+    },
+    CLEAR_IS_DELETE_ERROR: (state) => {
+      state.isDeleteError = false;
     },
   },
   actions: {
@@ -88,6 +113,7 @@ const memberStore = {
         (response) => {
           if (response.data.message === "success") {
             commit("SET_USER_INFO", response.data.userInfo);
+            console.log(response.data.userInfo);
           } else {
             console.log("유저 정보 없음!!");
           }
@@ -122,17 +148,80 @@ const memberStore = {
     },
     async idDuplicateCheck({ commit }, userid) {
       if (userid.length > 3) {
-        await idCheck(userid, (response) => {
-          console.log("아이디 중복검사 시도 성공");
-          if (response.data > 0) {
-            console.log("사용할 수 없는 ID");
-            commit("SET_CAN_USABLE_ID", false);
-          } else {
-            console.log("사용할 수 있는 ID");
-            commit("SET_CAN_USABLE_ID", true);
-          }
-        });
+        await idCheck(
+          userid,
+          (response) => {
+            console.log("아이디 중복검사 시도 성공");
+            if (response.data > 0) {
+              console.log("사용할 수 없는 ID");
+              commit("SET_CAN_USABLE_ID", false);
+            } else {
+              console.log("사용할 수 있는 ID");
+              commit("SET_CAN_USABLE_ID", true);
+            }
+          },
+          () => {}
+        );
       }
+    },
+    async updateUserStore({ commit }, user) {
+      await updateUser(
+        user,
+        (response) => {
+          if ((response.data.message = "success")) {
+            commit("SET_USER_INFO", user);
+            commit("SET_IS_UPDATE_ERROR", false);
+          } else {
+            commit("SET_IS_UPDATE_ERROR", true);
+          }
+        },
+        (error) => {
+          commit("SET_IS_UPDATE_ERROR", true);
+        }
+      );
+    },
+    async updatePasswordStore({ commit }, { userid, userpwd }) {
+      await updatePassword(
+        {
+          userid: userid,
+          userpwd: userpwd,
+        },
+        (response) => {
+          if (response.data.message == "success") {
+            console.log("비밀번호 변경 성공!");
+            commit("SET_IS_UPDATE_ERROR", false);
+          } else {
+            console.log("비밀번호 변경 실패!");
+            commit("SET_IS_UPDATE_ERROR", true);
+          }
+        },
+        (error) => {
+          commit("SET_IS_UPDATE_ERROR", true);
+          console.log("비밀번호 변경 실패!");
+        }
+      );
+    },
+    async deleteUserStore({ commit }, userid) {
+      await deleteUser(
+        userid,
+        (response) => {
+          if (response.data.message == "success") {
+            commit("SET_IS_LOGIN", false);
+            commit("SET_USER_INFO", null);
+            commit("SET_IS_ADMIN", false);
+            commit("SET_IS_DELETE_ERROR", false);
+            sessionStorage.removeItem("access-token");
+            if (this.$route.path != "/dashboard")
+              this.$router.push({ name: "dashboard" });
+          } else {
+            commit("SET_IS_DELETE_ERROR", true);
+          }
+        },
+        (error) => {
+          commit("SET_IS_DELETE_ERROR", true);
+          console.log("회원 삭제 실패!");
+        }
+      );
     },
   },
 };

@@ -1,5 +1,7 @@
 package com.ssafy.happyhouse.dto;
 
+import java.util.List;
+
 public class HouseInfoDto {
 	private int aptCode;
 	private String aptName;
@@ -12,7 +14,15 @@ public class HouseInfoDto {
 	private String lat;
 	private String lng;
 	private String img;
-	private String recentPrice;
+	private List<AptDetailDto> aptDetailInfos;
+
+	public List<AptDetailDto> getAptDetailInfos() {
+		return aptDetailInfos;
+	}
+
+	public void setAptDetailInfos(List<AptDetailDto> aptDetailInfos) {
+		this.aptDetailInfos = aptDetailInfos;
+	}
 
 	public int getAptCode() {
 		return aptCode;
@@ -102,20 +112,14 @@ public class HouseInfoDto {
 		this.img = img;
 	}
 
-	public String getRecentPrice() {
-		return recentPrice;
-	}
-
-	public void setRecentPrice(String recentPrice) {
-		this.recentPrice = recentPrice;
-	}
-
 	@Override
 	public String toString() {
 		return "HouseInfoDto [aptCode=" + aptCode + ", aptName=" + aptName + ", dongCode=" + dongCode + ", dongName="
 				+ dongName + ", sidoName=" + sidoName + ", gugunName=" + gugunName + ", buildYear=" + buildYear
-				+ ", jibun=" + jibun + ", lat=" + lat + ", lng=" + lng + ", img=" + img + ", recentPrice=" + recentPrice
-				+ "]";
+				+ ", jibun=" + jibun + ", lat=" + lat + ", lng=" + lng + ", img=" + img + ", aptDetailInfos="
+				+ aptDetailInfos + "]";
 	}
+
+	
 
 }

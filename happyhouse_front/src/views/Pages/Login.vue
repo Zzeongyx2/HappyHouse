@@ -49,7 +49,7 @@
                   name="userid"
                   id="userid"
                   :rules="{ required: true }"
-                  prepend-icon="ni ni-email-83"
+                  prepend-icon="ni ni-single-02"
                   placeholder="ID..."
                   v-model="user.userid"
                   @keyup.enter="confirm"
@@ -83,7 +83,7 @@
           </b-card>
           <b-row class="mt-3">
             <b-col cols="6">
-              <router-link to="/dashboard" class="text-light"
+              <router-link to="/findpwd" class="text-light"
                 ><small>비밀번호 찾기</small></router-link
               >
             </b-col>
@@ -99,7 +99,7 @@
   </div>
 </template>
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapMutations } from "vuex";
 
 const memberStore = "memberStore";
 
@@ -113,17 +113,21 @@ export default {
       },
     };
   },
+  created() {
+    this.SET_IS_LOGIN_ERROR(false);
+  },
   computed: {
     ...mapState(memberStore, ["isLogin", "isLoginError"]),
   },
   methods: {
     ...mapActions(memberStore, ["userConfirm", "getUserInfo"]),
+    ...mapMutations(memberStore, ["SET_IS_LOGIN_ERROR"]),
     async confirm() {
       await this.userConfirm(this.user);
       let token = sessionStorage.getItem("access-token");
       if (this.isLogin) {
         await this.getUserInfo(token);
-        this.$router.push({ name: "dashboard" });
+        this.$router.push({ name: "happyhouse" });
       }
     },
   },

@@ -15,7 +15,7 @@
         <b-card-body class="text-left">
             <div v-html="message"></div>
           </b-card-body>
-          <b-card-footer class="text-right">
+          <b-card-footer class="text-right" v-if="userInfo.userid === article.userid">
                 <b-button variant="outline-primary" @click="moveModify()">글 수정</b-button>
                 <b-button variant="outline-warning" @click="showSwal()">글 삭제</b-button>
           </b-card-footer>
@@ -32,6 +32,8 @@ import replyList from '../Community/ReplyList.vue';
 import Swal from 'sweetalert2'
 // style import
 import 'sweetalert2/dist/sweetalert2.css'
+import { mapState } from "vuex";
+const memberStore = "memberStore";
 
   export default {
     name: 'CommunityDetail',
@@ -47,6 +49,7 @@ import 'sweetalert2/dist/sweetalert2.css'
       };
     },
     computed: {
+      ...mapState(memberStore, ["userInfo"]),
     message() {
       if (this.article.content)
         return this.article.content.split("\n").join("<br>");

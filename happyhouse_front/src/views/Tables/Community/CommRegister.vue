@@ -35,10 +35,12 @@
 //   import subjects from './../projects'
 //   import http from "@/api/index";
 import { writeCommunity } from "@/api/community";
-  import { Table, TableColumn} from 'element-ui'
-  import Swal from 'sweetalert2'
+  import { Table, TableColumn} from 'element-ui';
+  import Swal from 'sweetalert2';
 // style import
-import 'sweetalert2/dist/sweetalert2.css'
+import 'sweetalert2/dist/sweetalert2.css';
+import { mapState } from "vuex";
+const memberStore = "memberStore";
 
   export default {
     name: 'CommunityDetail',
@@ -49,9 +51,16 @@ import 'sweetalert2/dist/sweetalert2.css'
     data() {
       return {
         article: {
-            userid: "ssafy",
+            userid: "",
         },
       };
+    },
+    created() {
+    this.article.userid = this.userInfo.userid;
+    console.log(this.article.userid);
+    },
+    computed: {
+        ...mapState(memberStore, ["userInfo"]),
     },
     methods: {
         registerArticle(){
