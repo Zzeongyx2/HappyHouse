@@ -120,10 +120,37 @@
                   <h3 v-else class="mb-0">APT LIST</h3>
                 </b-col>
                 <b-col class="text-right">
-                  <a href="#!" class="btn btn-sm btn-primary">관심지역 추가</a>
+                  <b-button size="sm" style="margin:3px" @click="getInterest" :pressed.sync="isShow">list</b-button>
+                <b-button variant="success" size="sm" style="margin:3px" @click="saveInterest">❤</b-button>
                 </b-col>
               </b-row>
             </template>
+
+            <el-table
+              type="expand"
+              class="table-responsive table"
+              :data="regionList"
+              :cell-style="{ height: '40px' }"
+              header-row-class-name="thead-light"
+              v-el-table-infinite-scroll=""
+              @row-click="moveRegion"
+              v-if="isShow"
+            >
+              <el-table-column
+                label="Interest"
+                min-width="110px"
+              >
+                <template v-slot="{ row }">
+                  <div class="font-weight-600">
+                    {{ row.sido }} {{row.gugun}} {{row.dong}}
+                    <div style="float:right;">
+                      <b-button size="sm" style="margin:3px" @click="deleteInterest(row)">X</b-button>
+                    </div>
+                  </div>
+                </template>
+              </el-table-column>
+            </el-table>
+
             <el-table
               class="table-responsive table"
               :data="houses"
@@ -210,12 +237,12 @@
               </el-table-column>
               <el-table-column
                 label="Build Year"
-                min-width="75px"
+                min-width="95px"
                 sortable
                 prop="buildYear"
               >
               </el-table-column>
-              <el-table-column label="History" min-width="60px">
+              <el-table-column label="History" min-width="80px">
                 <template v-slot="{ row }">
                   <div class="font-weight-600">
                     {{ row.aptDetailInfos.length }}
@@ -234,6 +261,8 @@
 import { Select, Option } from "element-ui";
 import { mapState, mapActions, mapMutations } from "vuex";
 import elTableInfiniteScroll from "el-table-infinite-scroll";
+import {saveRegion, getRegion, deleteRegion} from "@/api/interest";
+import Swal from 'sweetalert2';
 import {
   Table,
   TableColumn,
@@ -242,6 +271,7 @@ import {
   Dropdown,
 } from "element-ui";
 const houseStore = "houseStore";
+const memberStore = "memberStore";
 
 export default {
   name: "GoogleMap",
@@ -270,6 +300,8 @@ export default {
         [37.49754540521486, 127.02546694890695],
         [37.49646391248451, 127.02675574250912],
       ],
+      isShow: false,
+      regionList: [],
     };
   },
   directives: {
@@ -288,7 +320,9 @@ export default {
       "dongs",
       "houses",
       "markerlist",
+      "region",
     ]),
+    ...mapState(memberStore, ["userInfo"]),
   },
   created() {
     // this.$store.dispatch("getSido");
@@ -297,6 +331,8 @@ export default {
     this.CLEAR_GUGUN_LIST();
     this.CLEAR_HOUSE_LIST();
     this.getSido();
+    this.region.userid = this.userInfo.userid;
+    console.log(this.userInfo);
   },
   methods: {
     ...mapActions(houseStore, [
@@ -328,6 +364,82 @@ export default {
         this.getHouseList(this.dongCode);
         console.log(this.markerlist);
       }
+    },
+    deleteInterest(row){
+      // console.log("row", row);
+      deleteRegion(
+        row,
+        ({ data }) => {
+            if(data === "success"){
+              Swal.fire(
+                'Deleted!',
+                '삭제되었습니다.',
+                'success'
+              )
+            }else{
+              Swal.fire(
+                'Failed!',
+                '삭제 중 문제가 발생하였습니다.',
+                'warning'
+              )
+            }
+             // 현재 route를 /list로 변경.
+            this.getInterest();
+          },
+          () => {}
+      )
+    },
+    getInterest(){
+        getRegion(
+          this.region.userid,
+          ({ data }) => {
+            this.regionList = data;
+            console.log(this.regionList);
+            console.log(this.isShow);
+          },
+          () => {}
+        );
+    },
+    saveInterest(){
+      console.log(this.region);
+        saveRegion(
+          this.region,
+          ({ data }) => {
+            if(data === "success"){
+              Swal.fire(
+                'Registered!',
+                '등록되었습니다.',
+                'success'
+              )
+            }else{
+              Swal.fire(
+                'Failed!',
+                '등록 중 문제가 발생하였습니다.',
+                'warning'
+              )
+            }
+            this.getInterest();
+          },
+          () => {}
+        )
+    },
+    moveRegion(row){
+      let self = this;
+      console.log(row);
+      // 주소-좌표 변환 객체를 생성합니다
+      var geocoder = new kakao.maps.services.Geocoder();
+      const addr = row.sido + " " + row.gugun + " " + row.dong;
+      console.log(addr);
+      // 주소로 좌표를 검색합니다
+      geocoder.addressSearch(addr, function(result, status) {
+
+          // 정상적으로 검색이 완료됐으면 
+          if (status === kakao.maps.services.Status.OK) {
+
+              var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+              self.map.setCenter(coords);
+          } 
+      });    
     },
     initMap() {
       const container = document.getElementById("kakao-map");
