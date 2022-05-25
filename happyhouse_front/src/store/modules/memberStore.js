@@ -23,6 +23,7 @@ const memberStore = {
       username: "",
       useremail: "",
       isadmin: false,
+      visited: 0,
     },
     isAdmin: false,
   },
@@ -54,6 +55,7 @@ const memberStore = {
           username: "",
           useremail: "",
           isadmin: false,
+          visited: 0,
         };
       } else {
         state.isLogin = true;
@@ -111,6 +113,7 @@ const memberStore = {
         (response) => {
           if (response.data.message === "success") {
             commit("SET_USER_INFO", response.data.userInfo);
+            console.log(response.data.userInfo);
           } else {
             console.log("유저 정보 없음!!");
           }

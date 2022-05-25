@@ -46,14 +46,40 @@
         <b-card no-body class="border-0">
           <template v-slot:header>
             <b-row align-v="center">
-              <b-col xl="10">
+              <b-col xl="8">
                 <h3 class="mb-0">{{ address }}</h3>
               </b-col>
-              <b-col class="text-right" xl="2">
-                <b-button size="sm" style="margin: 3px">❤</b-button>
+              <b-col class="text-right" xl="4">
+                <b-button size="sm" style="margin:3px" @click="getInterest" :pressed.sync="isShow">list</b-button>
+                <b-button variant="success" size="sm" style="margin:3px" @click="saveInterest">❤</b-button>
               </b-col>
             </b-row>
           </template>
+          <el-table
+              type="expand"
+              class="table-responsive table"
+              :data="regionList"
+              :cell-style="{ height: '40px' }"
+              header-row-class-name="thead-light"
+              v-el-table-infinite-scroll=""
+              @row-click="moveRegion"
+              v-if="isShow"
+            >
+              <el-table-column
+                label="Interest"
+                min-width="110px"
+              >
+                <template v-slot="{ row }">
+                  <div class="font-weight-600">
+                    {{ row.sido }} {{row.gugun}} {{row.dong}}
+                    <div style="float:right;">
+                      <b-button size="sm" style="margin:3px" @click="deleteInterest(row)">X</b-button>
+                    </div>
+                  </div>
+                </template>
+              </el-table-column>
+            </el-table>
+
           <el-table
             class="table-responsive table"
             :data="list"
@@ -93,6 +119,10 @@
 <script>
 import { Table, TableColumn, Select, Option } from "element-ui";
 import elTableInfiniteScroll from "el-table-infinite-scroll";
+import {saveRegion, getRegion, deleteRegion} from "@/api/interest";
+import Swal from 'sweetalert2';
+import { mapState } from "vuex";
+const memberStore = "memberStore";
 
 export default {
   name: "ShopMap",
@@ -109,7 +139,21 @@ export default {
       isBicycleShow: false,
       address: "",
       list: [],
+      region: {
+        userid: "",
+        sido: "",
+        gugun: "",
+        dong: "",
+      },
+      regionList: [],
+      isShow: false,
     };
+  },
+  computed: {
+    ...mapState(memberStore, ["userInfo"]),
+  },
+  created(){
+    this.region.userid = this.userInfo.userid;
   },
   mounted() {
     if (window.kakao && window.kakao.maps) {
@@ -140,6 +184,82 @@ export default {
       } else {
         this.map.removeOverlayMapTypeId(kakao.maps.MapTypeId.BICYCLE);
       }
+    },
+    deleteInterest(row){
+      // console.log("row", row);
+      deleteRegion(
+        row,
+        ({ data }) => {
+            if(data === "success"){
+              Swal.fire(
+                'Deleted!',
+                '삭제되었습니다.',
+                'success'
+              )
+            }else{
+              Swal.fire(
+                'Failed!',
+                '삭제 중 문제가 발생하였습니다.',
+                'warning'
+              )
+            }
+             // 현재 route를 /list로 변경.
+            this.getInterest();
+          },
+          () => {}
+      )
+    },
+    getInterest(){
+        getRegion(
+          this.region.userid,
+          ({ data }) => {
+            this.regionList = data;
+            console.log(this.regionList);
+            console.log(this.isShow);
+          },
+          () => {}
+        );
+    },
+    saveInterest(){
+        saveRegion(
+          this.region,
+          ({ data }) => {
+            if(data === "success"){
+              Swal.fire(
+                'Registered!',
+                '등록되었습니다.',
+                'success'
+              )
+            }else{
+              Swal.fire(
+                'Failed!',
+                '등록 중 문제가 발생하였습니다.',
+                'warning'
+              )
+            }
+             // 현재 route를 /list로 변경.
+            this.getInterest();
+          },
+          () => {}
+        )
+    },
+    moveRegion(row){
+      let self = this;
+      console.log(row);
+      // 주소-좌표 변환 객체를 생성합니다
+      var geocoder = new kakao.maps.services.Geocoder();
+      const addr = row.sido + " " + row.gugun + " " + row.dong;
+      console.log(addr);
+      // 주소로 좌표를 검색합니다
+      geocoder.addressSearch(addr, function(result, status) {
+
+          // 정상적으로 검색이 완료됐으면 
+          if (status === kakao.maps.services.Status.OK) {
+
+              var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+              self.map.setCenter(coords);
+          } 
+      });    
     },
     initMap() {
       const container = document.getElementById("map");
@@ -214,6 +334,10 @@ export default {
             // 행정동의 region_type 값은 'H' 이므로
             if (result[i].region_type === "H") {
               self.address = result[i].address_name;
+              self.region.sido = result[i].region_1depth_name;
+              self.region.gugun = result[i].region_2depth_name;
+              self.region.dong = result[i].region_3depth_name;
+              console.log(self.region.sido, self.region.gugun, self.region.dong);
               break;
             }
           }
@@ -412,6 +536,7 @@ export default {
   width: 100%;
   height: 500px;
 }
+
 .map_wrap,
 .map_wrap * {
   margin: 0;
@@ -422,7 +547,7 @@ export default {
 .map_wrap {
   position: relative;
   width: 100%;
-  height: 350px;
+  /* height: 350px; */
 }
 
 #checkbox {
