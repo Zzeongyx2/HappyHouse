@@ -43,6 +43,14 @@ const houseStore = {
           aptName: item.aptName,
           lat: item.lat,
           lng: item.lng,
+          recentDealDate:
+            item.aptDetailInfos[0].dealYear +
+            "." +
+            item.aptDetailInfos[0].dealMonth +
+            "." +
+            item.aptDetailInfos[0].dealDay,
+          recentDealAmount: item.aptDetailInfos[0].dealAmount.trim(),
+          buildYear: item.buildYear,
         });
       });
     },
@@ -70,7 +78,7 @@ const houseStore = {
       state.region.gugun = house.gugunName;
       state.region.dong = house.dongName;
       state.region.dongcode = house.dongCode;
-    }
+    },
   },
 
   actions: {
