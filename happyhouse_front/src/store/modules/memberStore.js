@@ -22,6 +22,7 @@ const memberStore = {
       userid: "",
       username: "",
       useremail: "",
+      isadmin: false,
     },
     isAdmin: false,
   },
@@ -52,11 +53,13 @@ const memberStore = {
           userid: "",
           username: "",
           useremail: "",
+          isadmin: false,
         };
       } else {
         state.isLogin = true;
         state.userInfo = userInfo;
-        if (userInfo.isAdmin) {
+        console.log(userInfo);
+        if (userInfo.isadmin) {
           state.isAdmin = true;
         }
       }
