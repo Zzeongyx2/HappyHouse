@@ -1,13 +1,13 @@
-package com.ssafy.vue;
+package com.ssafy.happyhouse;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class HappyHouseFinalApplication {
+public class HappyhouseFinalApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(HappyHouseFinalApplication.class, args);
+		SpringApplication.run(HappyhouseFinalApplication.class, args);
 	}
 
 }

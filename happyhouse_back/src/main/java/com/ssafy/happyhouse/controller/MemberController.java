@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ssafy.happyhouse.dto.MemberDto;
 import com.ssafy.happyhouse.service.JwtServiceImpl;
 import com.ssafy.happyhouse.service.MemberService;
+import com.ssafy.happyhouse.util.Hash;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -45,17 +46,20 @@ public class MemberController {
 	@ApiOperation(value = "로그인", notes = "Access-token과 로그인 결과 메세지를 반환한다.", response = Map.class)
 	@PostMapping("/login")
 	public ResponseEntity<Map<String, Object>> login(
-			@RequestBody @ApiParam(value = "로그인 시 필요한 회원정보(아이디, 비밀번호).", required = true) MemberDto memberDto) {
+		@RequestBody @ApiParam(value = "로그인 시 필요한 회원정보(아이디, 비밀번호).", required = true) MemberDto memberDto) {
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
 		try {
 			MemberDto loginUser = memberService.login(memberDto);
+			
 			if (loginUser != null) {
+				memberService.updateVisited(loginUser.getUserid());
 				String token = jwtService.create("userid", loginUser.getUserid(), "access-token");// key, data, subject
 				logger.debug("로그인 토큰정보 : {}", token);
 				resultMap.put("access-token", token);
 				resultMap.put("message", SUCCESS);
 				status = HttpStatus.ACCEPTED;
+				System.out.println(loginUser.toString());
 			} else {
 				resultMap.put("message", FAIL);
 				status = HttpStatus.ACCEPTED;
@@ -197,10 +201,19 @@ public class MemberController {
 	public ResponseEntity<Map<String, Object>> findPwd(@RequestBody MemberDto memberDto) throws Exception {
 		logger.debug("findPassword - 호출");
 		System.out.println(memberDto.toString());
+
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
 		try {
 			String answer = memberService.findPWD(memberDto);
+			
+			// 비밀번호 복호화
+			Hash hash = new Hash(answer);
+			hash.setDecryptData(answer);
+			String dec = hash.getDecryptData();
+			
+			answer = dec;
+			
 			if (answer.length() > 0) {
 				resultMap.put("answer",answer);
 				resultMap.put("message", SUCCESS);
@@ -215,6 +228,14 @@ public class MemberController {
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+	}
+	
+	@GetMapping("/users")
+	public ResponseEntity<Map<String, String>> calcData() throws Exception{
+		Map<String, String> resultMap = new HashMap<>();
+		resultMap.put("calcUsers", Integer.toString(memberService.calcUsers()));
+		resultMap.put("totalVisited", Integer.toString(memberService.getTotalVisited()));
+		return new ResponseEntity<Map<String, String>>(resultMap, HttpStatus.ACCEPTED);
 	}
 	
 }

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.ssafy.happyhouse.dto.MemberDto;
 import com.ssafy.happyhouse.mapper.MemberMapper;
+import com.ssafy.happyhouse.util.Hash;
 
 @Service
 public class MemberServiceImpl implements MemberService {
@@ -16,6 +17,17 @@ public class MemberServiceImpl implements MemberService {
 	public MemberDto login(MemberDto memberDto) throws Exception {
 		if(memberDto.getUserid() == null || memberDto.getUserpwd() == null)
 			return null;
+		
+		// 비밀번호 암호화
+		String pwd = memberDto.getUserpwd();
+
+		Hash hash = new Hash(pwd);
+		hash.setEncryptData(hash.getPw());
+		String enc = hash.getEncryptData();
+
+		memberDto.setUserpwd(enc);
+
+		
 		return memberMapper.login(memberDto);
 	}
 
@@ -26,6 +38,13 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public boolean registerUser(MemberDto memberDto) throws Exception {
+		// 비밀번호 암호화
+		Hash hash = new Hash(memberDto.getUserpwd());
+		// encryption
+		hash.setEncryptData(hash.getPw());
+		String enc = hash.getEncryptData();
+		memberDto.setUserpwd(enc);
+		
 		return memberMapper.registerUser(memberDto) == 1;
 		
 	}
@@ -42,6 +61,12 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public boolean updatePassword(MemberDto memberDto) throws Exception {
+		// 비밀번호 암호화
+		Hash hash = new Hash(memberDto.getUserpwd());
+		// encryption
+		hash.setEncryptData(hash.getPw());
+		String enc = hash.getEncryptData();
+		memberDto.setUserpwd(enc);
 		return memberMapper.updatePassword(memberDto) == 1;
 	}
 	
@@ -53,6 +78,21 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public String findPWD(MemberDto memberDto) throws Exception {
 		return memberMapper.findPWD(memberDto);
+	}
+
+	@Override
+	public int calcUsers() throws Exception {
+		return memberMapper.calcUsers();
+	}
+	
+	@Override
+	public int getTotalVisited() throws Exception {
+		return memberMapper.getTotalVisited();
+	}
+
+	@Override
+	public int updateVisited(String userid) throws Exception {
+		return memberMapper.updateVisited(userid);
 	}
 
 

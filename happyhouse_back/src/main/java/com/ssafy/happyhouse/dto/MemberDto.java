@@ -18,14 +18,23 @@ public class MemberDto {
 	private String regtime;
 	@ApiModelProperty(value= "관리자 권한")
 	private boolean isadmin;
+	private int visited;
 	
 
-	public boolean isadmin() {
+	public boolean isIsadmin() {
 		return isadmin;
 	}
 
-	public void setAdmin(boolean isAdmin) {
-		this.isadmin = isAdmin;
+	public void setIsadmin(boolean isadmin) {
+		this.isadmin = isadmin;
+	}
+
+	public int getVisited() {
+		return visited;
+	}
+
+	public void setVisited(int visited) {
+		this.visited = visited;
 	}
 
 	public String getUserid() {
