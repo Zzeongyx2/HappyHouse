@@ -120,8 +120,20 @@
                   <h3 v-else class="mb-0">APT LIST</h3>
                 </b-col>
                 <b-col class="text-right">
-                  <b-button size="sm" style="margin:3px" @click="getInterest" :pressed.sync="isShow">list</b-button>
-                <b-button variant="success" size="sm" style="margin:3px" @click="saveInterest">❤</b-button>
+                  <b-button
+                    size="sm"
+                    style="margin: 3px"
+                    @click="getInterest"
+                    :pressed.sync="isShow"
+                    >list</b-button
+                  >
+                  <b-button
+                    variant="success"
+                    size="sm"
+                    style="margin: 3px"
+                    @click="saveInterest"
+                    >❤</b-button
+                  >
                 </b-col>
               </b-row>
             </template>
@@ -136,15 +148,17 @@
               @row-click="moveRegion"
               v-if="isShow"
             >
-              <el-table-column
-                label="Interest"
-                min-width="110px"
-              >
+              <el-table-column label="Interest" min-width="110px">
                 <template v-slot="{ row }">
                   <div class="font-weight-600">
-                    {{ row.sido }} {{row.gugun}} {{row.dong}}
-                    <div style="float:right;">
-                      <b-button size="sm" style="margin:3px" @click="deleteInterest(row)">X</b-button>
+                    {{ row.sido }} {{ row.gugun }} {{ row.dong }}
+                    <div style="float: right">
+                      <b-button
+                        size="sm"
+                        style="margin: 3px"
+                        @click="deleteInterest(row)"
+                        >X</b-button
+                      >
                     </div>
                   </div>
                 </template>
@@ -261,8 +275,8 @@
 import { Select, Option } from "element-ui";
 import { mapState, mapActions, mapMutations } from "vuex";
 import elTableInfiniteScroll from "el-table-infinite-scroll";
-import {saveRegion, getRegion, deleteRegion} from "@/api/interest";
-import Swal from 'sweetalert2';
+import { saveRegion, getRegion, deleteRegion } from "@/api/interest";
+import Swal from "sweetalert2";
 import {
   Table,
   TableColumn,
@@ -291,17 +305,16 @@ export default {
       dongCode: null,
       infowindow: null,
       markers: [],
-      markerPositions2: [
-        [37.499590490909185, 127.0263723554437],
-        [37.499427948430814, 127.02794423197847],
-        [37.498553760499505, 127.02882598822454],
-        [37.497625593121384, 127.02935713582038],
-        [37.49629291770947, 127.02587362608637],
-        [37.49754540521486, 127.02546694890695],
-        [37.49646391248451, 127.02675574250912],
-      ],
+      infowindows: [],
+      overlays: [],
       isShow: false,
       regionList: [],
+      region: {
+        userid: "",
+        sido: "",
+        gugun: "",
+        dong: "",
+      },
     };
   },
   directives: {
@@ -310,7 +323,14 @@ export default {
   watch: {
     markerlist: function () {
       console.log("markers watch 실행됨");
-      this.displayMarker(this.markerPositions2, this.markerlist);
+      this.displayMarker(this.markerlist);
+    },
+    houses: function () {
+      if (this.houses.length > 0) {
+        this.region.sido = this.houses[0].sidoName;
+        this.region.gugun = this.houses[0].gugunName;
+        this.region.dong = this.houses[0].dongName;
+      }
     },
   },
   computed: {
@@ -320,7 +340,6 @@ export default {
       "dongs",
       "houses",
       "markerlist",
-      "region",
     ]),
     ...mapState(memberStore, ["userInfo"]),
   },
@@ -365,65 +384,58 @@ export default {
         console.log(this.markerlist);
       }
     },
-    deleteInterest(row){
+    deleteInterest(row) {
       // console.log("row", row);
       deleteRegion(
         row,
         ({ data }) => {
-            if(data === "success"){
-              Swal.fire(
-                'Deleted!',
-                '삭제되었습니다.',
-                'success'
-              )
-            }else{
-              Swal.fire(
-                'Failed!',
-                '삭제 중 문제가 발생하였습니다.',
-                'warning'
-              )
-            }
-             // 현재 route를 /list로 변경.
-            this.getInterest();
-          },
-          () => {}
-      )
+          if (data === "success") {
+            Swal.fire("Deleted!", "삭제되었습니다.", "success");
+          } else {
+            Swal.fire("Failed!", "삭제 중 문제가 발생하였습니다.", "warning");
+          }
+          // 현재 route를 /list로 변경.
+          this.getInterest();
+        },
+        () => {}
+      );
     },
-    getInterest(){
-        getRegion(
-          this.region.userid,
-          ({ data }) => {
-            this.regionList = data;
-            console.log(this.regionList);
-            console.log(this.isShow);
-          },
-          () => {}
-        );
+    getInterest() {
+      getRegion(
+        this.region.userid,
+        ({ data }) => {
+          this.regionList = data;
+          console.log(this.regionList);
+          console.log(this.isShow);
+        },
+        () => {}
+      );
     },
-    saveInterest(){
+    saveInterest() {
       console.log(this.region);
+      if (
+        (this.region.sido != null) &
+        (this.region.gugun != null) &
+        (this.dongCode != null)
+      ) {
+        console.log("데이터있음");
         saveRegion(
           this.region,
           ({ data }) => {
-            if(data === "success"){
-              Swal.fire(
-                'Registered!',
-                '등록되었습니다.',
-                'success'
-              )
-            }else{
-              Swal.fire(
-                'Failed!',
-                '등록 중 문제가 발생하였습니다.',
-                'warning'
-              )
+            if (data === "success") {
+              Swal.fire("Registered!", "등록되었습니다.", "success");
+            } else {
+              Swal.fire("Failed!", "등록 중 문제가 발생하였습니다.", "warning");
             }
             this.getInterest();
           },
           () => {}
-        )
+        );
+      } else {
+        console.log("데이터없음");
+      }
     },
-    moveRegion(row){
+    moveRegion(row) {
       let self = this;
       console.log(row);
       // 주소-좌표 변환 객체를 생성합니다
@@ -431,15 +443,13 @@ export default {
       const addr = row.sido + " " + row.gugun + " " + row.dong;
       console.log(addr);
       // 주소로 좌표를 검색합니다
-      geocoder.addressSearch(addr, function(result, status) {
-
-          // 정상적으로 검색이 완료됐으면 
-          if (status === kakao.maps.services.Status.OK) {
-
-              var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-              self.map.setCenter(coords);
-          } 
-      });    
+      geocoder.addressSearch(addr, function (result, status) {
+        // 정상적으로 검색이 완료됐으면
+        if (status === kakao.maps.services.Status.OK) {
+          var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+          self.map.setCenter(coords);
+        }
+      });
     },
     initMap() {
       const container = document.getElementById("kakao-map");
@@ -460,56 +470,52 @@ export default {
       container.style.height = `${size}px`;
       this.map.relayout();
     },
-    displayMarker(markerPositions, markerarray) {
+    displayMarker(markerarray) {
       console.log("display안에서 찍는", markerarray);
       if (this.markers.length > 0) {
         this.markers.forEach((marker) => marker.setMap(null));
+        this.markers = [];
+        this.overlays.forEach((overlay) => overlay.setMap(null));
       }
+      var bounds = new kakao.maps.LatLngBounds();
+      for (var i = 0; i < markerarray.length; i++) {
+        var marker = new kakao.maps.Marker({
+          map: this.map,
+          position: new kakao.maps.LatLng(
+            markerarray[i].lat,
+            markerarray[i].lng
+          ),
+        });
 
-      const positions = markerPositions.map(
-        (position) => new kakao.maps.LatLng(...position)
-      );
-      const positions1 = markerarray.map(
-        (position) => new kakao.maps.LatLng(position.lat, position.lng)
-      );
-      console.log("postions1", positions1);
-      if (positions1.length > 0) {
-        this.markers = positions1.map(
-          (position) =>
-            new kakao.maps.Marker({
-              map: this.map,
-              position,
-            })
+        var content =
+          '<div class="customoverlay">' +
+          '  <a target="_blank">' +
+          '    <span class="title">' +
+          markerarray[i].aptName +
+          "</span>" +
+          "  </a>" +
+          "</div>";
+        var customOverlay = new kakao.maps.CustomOverlay({
+          position: new kakao.maps.LatLng(
+            markerarray[i].lat,
+            markerarray[i].lng
+          ),
+          content: content,
+          removable: true,
+          yAnchor: 0.25,
+        });
+        this.markers.push(marker);
+        this.overlays.push(customOverlay);
+        bounds.extend(
+          new kakao.maps.LatLng(markerarray[i].lat, markerarray[i].lng)
         );
 
-        const bounds = positions1.reduce(
-          (bounds, latlng) => bounds.extend(latlng),
-          new kakao.maps.LatLngBounds()
-        );
-
-        this.map.setBounds(bounds);
+        marker.setMap(this.map);
+        customOverlay.setMap(this.map);
       }
+      this.map.setBounds(bounds);
     },
-    displayInfoWindow() {
-      if (this.infowindow && this.infowindow.getMap()) {
-        //이미 생성한 인포윈도우가 있기 때문에 지도 중심좌표를 인포윈도우 좌표로 이동시킨다.
-        this.map.setCenter(this.infowindow.getPosition());
-        return;
-      }
 
-      var iwContent = '<div style="padding:5px;">Hello World!</div>', // 인포윈도우에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
-        iwPosition = new kakao.maps.LatLng(33.450701, 126.570667), //인포윈도우 표시 위치입니다
-        iwRemoveable = true; // removeable 속성을 ture 로 설정하면 인포윈도우를 닫을 수 있는 x버튼이 표시됩니다
-
-      this.infowindow = new kakao.maps.InfoWindow({
-        map: this.map, // 인포윈도우가 표시될 지도
-        position: iwPosition,
-        content: iwContent,
-        removable: iwRemoveable,
-      });
-
-      this.map.setCenter(iwPosition);
-    },
     formatter1(row, column) {
       return `${row.dealYear}.${row.dealMonth}.${row.dealDay}`;
     },
