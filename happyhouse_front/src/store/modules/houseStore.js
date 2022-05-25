@@ -9,6 +9,13 @@ const houseStore = {
     houses: [],
     markerlist: [],
     house: null,
+    egion: {
+      userid: "",
+      sido: "",
+      gugun: "",
+      dong: "",
+      dongcode: "",
+    },
   },
 
   getters: {},
@@ -58,6 +65,12 @@ const houseStore = {
     SET_DETAIL_HOUSE: (state, house) => {
       state.house = house;
     },
+    SET_REGION: (state, house) => {
+      state.region.sido = house.sidoName;
+      state.region.gugun = house.gugunName;
+      state.region.dong = house.dongName;
+      state.region.dongcode = house.dongCode;
+    }
   },
 
   actions: {
@@ -109,6 +122,7 @@ const houseStore = {
           //   console.log(response.data.response.body.items.item);
           commit("SET_HOUSE_LIST", response.data);
           commit("SET_MARKER_LIST", response.data);
+          commit("SET_REGION", response.data[0]);
           console.log(response.data);
         },
         (error) => {
