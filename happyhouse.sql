@@ -1,3 +1,13 @@
+create table user(
+	userid varchar(20) primary key,
+    userpwd text,
+    email varchar(50),
+    username varchar(20),
+    regtime timestamp default current_timestamp,
+    isadmin boolean default false,
+    visited int default 0
+);
+
 create table notice(
 	articleno int auto_increment primary key,
     userid varchar(20),
@@ -42,7 +52,10 @@ create table reply(
 
 create table interest(
     userid varchar(20),
-    dongcode varchar(10),
+    sido varchar(30),
+    gugun varchar(30),
+    dong varchar(30),
+    dongcode varchar(10) default 0,
     regtime timestamp default current_timestamp,
-    primary key (userid, dongcode)
+    primary key (userid, sido, gugun, dong)
 );
