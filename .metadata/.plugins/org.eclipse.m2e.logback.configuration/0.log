@@ -1138,3 +1138,4 @@
 2022-05-25 09:38:09,176 [Worker-2: Building workspace] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 7 resources
 2022-05-25 09:38:09,279 [Worker-2: Building workspace] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
 2022-05-25 09:38:09,279 [Worker-2: Building workspace] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered properties files.
+2022-05-25 09:38:09,280 [Worker-2: Building workspace] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\SSAFY\workspace\최종관통프로젝트\11\happyhouse_back\src\test\resources

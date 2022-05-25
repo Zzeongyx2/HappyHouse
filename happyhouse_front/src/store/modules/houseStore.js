@@ -1,10 +1,4 @@
-import {
-  sidoList,
-  gugunList,
-  dongList,
-  houseList,
-  houseDetailList,
-} from "@/api/house.js";
+import {sidoList, gugunList, dongList, houseDetailList } from "@/api/house.js";
 
 const houseStore = {
   namespaced: true,
@@ -13,6 +7,7 @@ const houseStore = {
     guguns: [{ value: null, text: "선택하세요" }],
     dongs: [{ value: null, text: "선택하세요" }],
     houses: [],
+    markerlist: [],
     house: null,
   },
 
@@ -32,6 +27,15 @@ const houseStore = {
     SET_DONG_LIST: (state, dongs) => {
       dongs.forEach((dong) => {
         state.dongs.push({ value: dong.dongCode, text: dong.dongName });
+      });
+    },
+    SET_MARKER_LIST: (state, infos) => {
+      infos.forEach((item) => {
+        state.markerlist.push({
+          aptName: item.aptName,
+          lat: item.lat,
+          lng: item.lng,
+        });
       });
     },
     CLEAR_SIDO_LIST: (state) => {
@@ -103,6 +107,7 @@ const houseStore = {
         (response) => {
           //   console.log(response.data.response.body.items.item);
           commit("SET_HOUSE_LIST", response.data);
+          commit("SET_MARKER_LIST", response.data);
           console.log(response.data);
         },
         (error) => {
