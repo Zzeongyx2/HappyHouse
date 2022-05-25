@@ -406,13 +406,12 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style>
 #map {
   border: 5px;
   width: 100%;
   height: 500px;
 }
-
 .map_wrap,
 .map_wrap * {
   margin: 0;

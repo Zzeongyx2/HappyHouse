@@ -1,6 +1,8 @@
 <template>
   <div>
-    <base-header class="pb-6 pb-8 pt-5 pt-md-8 bg-gradient-success">
+    <base-header
+      class="pb-6 pb-8 pt-5 pt-md-5 bg-gradient-success position-relative"
+    >
       <!-- Card stats -->
       <!-- <b-row>
         <b-col xl="3" md="6">
@@ -71,46 +73,54 @@
     <b-col class="sm-3" align="left">
       <b-button variant="outline-primary" @click="sendKeyword">검색</b-button>
     </b-col> -->
-        <b-col class="sm-2">
+        <b-col cols="2">
           <b-form-select
             v-model="sidoCode"
             :options="sidos"
             @change="gugunList"
           ></b-form-select>
         </b-col>
-        <b-col class="sm-2">
+        <b-col cols="2">
           <b-form-select
             v-model="gugunCode"
             :options="guguns"
             @change="dongList"
           ></b-form-select>
         </b-col>
-        <b-col class="sm-2">
+        <b-col cols="2">
           <b-form-select
             v-model="dongCode"
             :options="dongs"
             @change="searchApt"
           ></b-form-select>
         </b-col>
+        <b-col cols="6"> <b-card></b-card> </b-col>
       </b-row>
     </base-header>
 
-    <b-container fluid class="mt--7">
-      <b-row>
-        <b-col xl="8">
+    <b-container fluid class="mt--7" style="height: 700px">
+      <b-row class="h-100">
+        <b-col xl="6">
           <b-card no-body class="border-0">
-            <div id="kakao-map" class="map-canvas"></div>
+            <div id="kakao-map" class="map-canvas" style="height: 700px"></div>
           </b-card>
         </b-col>
-        <b-col xl="4">
+        <b-col xl="6">
           <b-card no-body class="border-0">
             <template v-slot:header>
               <b-row align-v="center">
                 <b-col>
-                  <h3 class="mb-0">APT LIST</h3>
+                  <h3
+                    v-if="houses.length > 0"
+                    class="mb-0"
+                    v-html="houses[0].dongName + `의 APT LIST`"
+                  >
+                    의
+                  </h3>
+                  <h3 v-else class="mb-0">APT LIST</h3>
                 </b-col>
                 <b-col class="text-right">
-                  <a href="#!" class="btn btn-sm btn-primary">기타</a>
+                  <a href="#!" class="btn btn-sm btn-primary">관심지역 추가</a>
                 </b-col>
               </b-row>
             </template>
@@ -119,43 +129,98 @@
               :data="houses"
               :cell-style="{ height: '40px' }"
               header-row-class-name="thead-light"
-              v-el-table-infinite-scroll=""
+              max-height="700"
+              v-el-table-infinite-scroll
             >
               <el-table-column type="expand">
                 <template #default="props">
-                  <div m="4" font-family="sans-serif" font-size="15px">
-                    주소 :
+                  <b-card>
+                    <template v-slot:header>
+                      <b-row align-v="center">
+                        <b-col>
+                          <h3 class="mb-0">{{ props.row.aptName }}</h3>
+                        </b-col>
+                        <b-col class="text-right">
+                          <a href="#!" class="btn btn-sm btn-primary">검색</a>
+                        </b-col>
+                      </b-row>
+                    </template>
+                    <el-table
+                      class="table-responsive table"
+                      :data="props.row.aptDetailInfos"
+                      :cell-style="{ height: '40px' }"
+                      header-row-class-name="thead-light"
+                      id="innertable"
+                      v-el-table-infinite-scroll
+                    >
+                      <el-table-column
+                        label="거래 날짜"
+                        min-width="90px"
+                        prop="row"
+                        :formatter="formatter1"
+                        sortable
+                      >
+                      </el-table-column>
+                      <el-table-column
+                        label="평 수"
+                        min-width="90px"
+                        prop="area"
+                        sortable
+                      >
+                      </el-table-column>
+                      <el-table-column
+                        label="층"
+                        min-width="60px"
+                        prop="floor"
+                        sortable
+                      >
+                      </el-table-column>
+                      <el-table-column
+                        label="dealAmount (단위 : 만)"
+                        min-width="130px"
+                        prop="dealAmount"
+                        sortable
+                      >
+                      </el-table-column>
+                    </el-table>
+                  </b-card>
+                </template>
+              </el-table-column>
+              <el-table-column label="Address" min-width="140px"
+                ><template v-slot="{ row }">
+                  <div class="font-weight-600">
                     {{
-                      props.row.sidoName +
-                      ` ` +
-                      props.row.gugunName +
-                      ` ` +
-                      props.row.dongName +
-                      ` ` +
-                      props.row.jibun
+                      row.sidoName +
+                      " " +
+                      row.gugunName +
+                      " " +
+                      row.dongName +
+                      " " +
+                      row.jibun
                     }}
-                    <br />
-                    건축년도 : {{ props.row.buildYear }}
                   </div>
                 </template>
               </el-table-column>
               <el-table-column
                 label="Name"
-                min-width="110px"
-                prop="aptName"
-                style="min-height: 750px"
-              >
-                <template v-slot="{ row }">
-                  <div class="font-weight-600">{{ row.aptName }}</div>
-                </template>
-              </el-table-column>
-
-              <el-table-column
-                label="Price"
                 min-width="100px"
-                prop="recentPrice"
                 sortable
+                prop="aptName"
               >
+              </el-table-column>
+              <el-table-column
+                label="Build Year"
+                min-width="75px"
+                sortable
+                prop="buildYear"
+              >
+              </el-table-column>
+              <el-table-column label="History" min-width="60px">
+                <template v-slot="{ row }">
+                  <div class="font-weight-600">
+                    {{ row.aptDetailInfos.length }}
+                  </div>
+                </template>
               </el-table-column>
             </el-table>
           </b-card>
@@ -194,29 +259,21 @@ export default {
       sidoCode: null,
       gugunCode: null,
       dongCode: null,
-      markerPositions1: [
-        [33.452278, 126.567803],
-        [33.452671, 126.574792],
-        [33.451744, 126.572441],
-      ],
-      markerPositions2: [
-        [37.499590490909185, 127.0263723554437],
-        [37.499427948430814, 127.02794423197847],
-        [37.498553760499505, 127.02882598822454],
-        [37.497625593121384, 127.02935713582038],
-        [37.49629291770947, 127.02587362608637],
-        [37.49754540521486, 127.02546694890695],
-        [37.49646391248451, 127.02675574250912],
-      ],
-      markers: [],
       infowindow: null,
+      markers: [],
     };
   },
   directives: {
     "el-table-infinite-scroll": elTableInfiniteScroll,
   },
   computed: {
-    ...mapState(houseStore, ["sidos", "guguns", "dongs", "houses"]),
+    ...mapState(houseStore, [
+      "sidos",
+      "guguns",
+      "dongs",
+      "houses",
+      "markerlist",
+    ]),
   },
   created() {
     // this.$store.dispatch("getSido");
@@ -252,19 +309,23 @@ export default {
       if (this.gugunCode) this.getDong(this.gugunCode);
     },
     searchApt() {
-      if (this.dongCode) this.getHouseList(this.dongCode);
-      console.log(this.houses);
+      if (this.dongCode)
+        this.getHouseList(this.dongCode).then(() => {
+          this.displayMarker(this.markerlist);
+        });
     },
     initMap() {
       const container = document.getElementById("kakao-map");
       const options = {
-        center: new kakao.maps.LatLng(33.450701, 126.570667),
-        level: 5,
+        center: new kakao.maps.LatLng(37.50149, 127.03965),
+        level: 4,
       };
+      var mapTypeControl = new kakao.maps.MapTypeControl();
+      var zoomControl = new kakao.maps.ZoomControl();
 
-      //지도 객체를 등록합니다.
-      //지도 객체는 반응형 관리 대상이 아니므로 initMap에서 선언합니다.
       this.map = new kakao.maps.Map(container, options);
+      this.map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
+      this.map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
     },
     changeSize(size) {
       const container = document.getElementById("map");
@@ -272,7 +333,8 @@ export default {
       container.style.height = `${size}px`;
       this.map.relayout();
     },
-    displayMarker(markerPositions) {
+    displayMarker(markerArray) {
+      console.log("displaymarker안에서 호출", markerArray);
       if (this.markers.length > 0) {
         this.markers.forEach((marker) => marker.setMap(null));
       }
@@ -318,6 +380,9 @@ export default {
 
       this.map.setCenter(iwPosition);
     },
+    formatter1(row, column) {
+      return `${row.dealYear}.${row.dealMonth}.${row.dealDay}`;
+    },
   },
   mounted() {
     if (window.kakao && window.kakao.maps) {
@@ -333,3 +398,20 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.table {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.table >>> .el-table__body-wrapper {
+  height: 600px !important;
+}
+
+#innertable >>> .el-table__body-wrapper {
+  height: 300px !important;
+}
+</style>
