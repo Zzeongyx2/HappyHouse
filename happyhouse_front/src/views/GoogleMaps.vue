@@ -261,10 +261,25 @@ export default {
       dongCode: null,
       infowindow: null,
       markers: [],
+      markerPositions2: [
+        [37.499590490909185, 127.0263723554437],
+        [37.499427948430814, 127.02794423197847],
+        [37.498553760499505, 127.02882598822454],
+        [37.497625593121384, 127.02935713582038],
+        [37.49629291770947, 127.02587362608637],
+        [37.49754540521486, 127.02546694890695],
+        [37.49646391248451, 127.02675574250912],
+      ],
     };
   },
   directives: {
     "el-table-infinite-scroll": elTableInfiniteScroll,
+  },
+  watch: {
+    markerlist: function () {
+      console.log("markers watch 실행됨");
+      this.displayMarker(this.markerPositions2, this.markerlist);
+    },
   },
   computed: {
     ...mapState(houseStore, [
@@ -309,10 +324,10 @@ export default {
       if (this.gugunCode) this.getDong(this.gugunCode);
     },
     searchApt() {
-      if (this.dongCode)
-        this.getHouseList(this.dongCode).then(() => {
-          this.displayMarker(this.markerlist);
-        });
+      if (this.dongCode) {
+        this.getHouseList(this.dongCode);
+        console.log(this.markerlist);
+      }
     },
     initMap() {
       const container = document.getElementById("kakao-map");
@@ -333,8 +348,8 @@ export default {
       container.style.height = `${size}px`;
       this.map.relayout();
     },
-    displayMarker(markerArray) {
-      console.log("displaymarker안에서 호출", markerArray);
+    displayMarker(markerPositions, markerarray) {
+      console.log("display안에서 찍는", markerarray);
       if (this.markers.length > 0) {
         this.markers.forEach((marker) => marker.setMap(null));
       }
@@ -342,9 +357,12 @@ export default {
       const positions = markerPositions.map(
         (position) => new kakao.maps.LatLng(...position)
       );
-
-      if (positions.length > 0) {
-        this.markers = positions.map(
+      const positions1 = markerarray.map(
+        (position) => new kakao.maps.LatLng(position.lat, position.lng)
+      );
+      console.log("postions1", positions1);
+      if (positions1.length > 0) {
+        this.markers = positions1.map(
           (position) =>
             new kakao.maps.Marker({
               map: this.map,
@@ -352,7 +370,7 @@ export default {
             })
         );
 
-        const bounds = positions.reduce(
+        const bounds = positions1.reduce(
           (bounds, latlng) => bounds.extend(latlng),
           new kakao.maps.LatLngBounds()
         );

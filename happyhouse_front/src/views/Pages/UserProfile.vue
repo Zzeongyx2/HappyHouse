@@ -1,9 +1,9 @@
 <template>
   <div>
     <div
-      class="header pb-8 pt-5 pt-lg-6 d-flex align-items-center profile-header"
+      class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center profile-header"
       style="
-        min-height: 300px;
+        min-height: 600px;
         background-size: cover;
         background-position: center top;
       "

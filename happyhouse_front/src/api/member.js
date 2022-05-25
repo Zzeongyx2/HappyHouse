@@ -47,6 +47,10 @@ async function findUserPwd(user, success, fail) {
     .catch(fail);
 }
 
+function calcData(success, fail) {
+  api.get(`/user/users`).then(success).catch(fail);
+}
+
 export {
   login,
   findById,
@@ -56,4 +60,5 @@ export {
   updatePassword,
   deleteUser,
   findUserPwd,
+  calcData,
 };

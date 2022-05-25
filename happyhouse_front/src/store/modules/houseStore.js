@@ -30,6 +30,7 @@ const houseStore = {
       });
     },
     SET_MARKER_LIST: (state, infos) => {
+      state.markerlist = [];
       infos.forEach((item) => {
         state.markerlist.push({
           aptName: item.aptName,
@@ -98,7 +99,7 @@ const houseStore = {
         }
       );
     },
-    getHouseList({ commit }, dongCode) {
+    getHouseList: ({ commit }, dongCode) => {
       const params = {
         dong: dongCode,
       };

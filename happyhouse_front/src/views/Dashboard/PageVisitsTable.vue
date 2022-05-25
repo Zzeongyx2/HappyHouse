@@ -13,7 +13,7 @@
 
     <el-table
       class="table-responsive table"
-      :data="newsData"
+      :data="newsList"
       header-row-class-name="thead-light"
       max-height="500px"
       v-el-table-infinite-scroll
@@ -43,6 +43,9 @@ import {
   DropdownItem,
   Dropdown,
 } from "element-ui";
+import { mapState, mapActions, mapMutations } from "vuex";
+const newsStore = "newsStore";
+
 export default {
   name: "page-visits-table",
   components: {
@@ -54,6 +57,16 @@ export default {
   },
   directives: {
     "el-table-infinite-scroll": elTableInfiniteScroll,
+  },
+  computed: {
+    ...mapState(newsStore, ["newsList"]),
+  },
+  mounted(){
+    this.newsList;
+  },
+  methods: {
+    ...mapActions(newsStore, ["getNewsList"]),
+    ...mapMutations(newsStore, ["SET_NEWS_LIST"]),
   },
   data() {
     return {

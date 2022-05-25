@@ -5,9 +5,6 @@
 
     <b-container fluid class="mt--7">
       <shop-map />
-      <!-- <b-card no-body class="border-0"> -->
-      <!-- <shop-map /> -->
-      <!-- </b-card> -->
     </b-container>
   </div>
 </template>
