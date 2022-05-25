@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.happyhouse.mapper.MemberMapper">
+
+	<select id="idCheck" parameterType="string" resultType="int">
+		select count(userid)
+		from user
+		where userid = #{userid}
+	</select>
+
+
+	<select id="login" parameterType="memberDto" resultType="memberDto">
+		select userid, email, username, isadmin, visited
+		from user
+		where userid = #{userid} and userpwd = #{userpwd}
+	</select>
+	
+	<update id="updateVisited" parameterType="string">
+		update user
+		set visited = visited +1
+		where userid = #{userid}
+	</update>
+	
+	<select id="userInfo" parameterType="String" resultType="memberDto">
+		select userid, email, username, regtime, isadmin, visited
+		from user
+		where userid = #{userid}
+	</select>
+	
+	<insert id="registerUser" parameterType="memberDto">
+		insert into user (userid, userpwd, email, username, regtime)
+		values (#{userid}, #{userpwd}, #{email}, #{username}, now())
+	</insert>
+	
+	
+	<update id="updateUser" parameterType="memberDto">
+		update user 
+		   set username = #{username}, 
+		   	   email = #{email}
+		 where userid = #{userid}
+	</update>
+
+	<update id="updatePassword" parameterType="map">
+		update user 
+		   set userpwd = #{userpwd} 
+		 where userid = #{userid}
+	</update>
+	
+	<delete id="deleteUser" parameterType="String">
+		delete 
+		from user
+		where userid = #{userid}
+	</delete>
+	
+	<select id="findPWD" parameterType="memberDto" resultType="String">
+		select userpwd
+		from user
+		where userid = #{userid} and email = #{email}
+	</select>
+	
+	<select id="calcUsers" resultType="int">
+		select count(*)
+		from user
+		where isadmin = false
+	</select>
+	
+	
+</mapper>

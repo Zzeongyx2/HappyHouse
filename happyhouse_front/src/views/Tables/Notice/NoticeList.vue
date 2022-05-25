@@ -6,7 +6,7 @@
                     <h2 class="mb-0">공지사항</h2>
                 </b-col>
                 <b-col class="text-right">
-                    <b-button variant="outline-success" @click="moveRegist()">공지 작성</b-button>
+                    <b-button v-if="isAdmin" variant="outline-success" @click="moveRegist()">공지 작성</b-button>
                 </b-col>
             </b-row>
         </b-card-header>
@@ -47,8 +47,11 @@
 //   import subjects from './../projects'
 //   import http from "@/api/index";
 import { listNotice } from "@/api/notice";
-import noticeListItem from '../NoticeListItem.vue'
-import { Table, TableColumn} from 'element-ui'
+import noticeListItem from '../NoticeListItem.vue';
+import { Table, TableColumn} from 'element-ui';
+import { mapState } from "vuex";
+const memberStore = "memberStore";
+
 export default {
     name: 'noticeList',
     components: {
@@ -79,11 +82,13 @@ export default {
             },
             () => {},
         );
+        // console.log(this.isAdmin);
     },
     computed: {
+        ...mapState(memberStore, ["isAdmin"]),
         rows(){
             return this.noticeListItem.length;
-        }
+        },
     },
     mounted() {
         this.paginate(this.perPage, 0);

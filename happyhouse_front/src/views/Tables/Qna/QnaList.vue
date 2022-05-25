@@ -62,6 +62,7 @@ export default {
         paginatedItems: [],
         currentPage: 1,
         perPage: 3,
+        answercnt: 0,
       };
     },
     created() {

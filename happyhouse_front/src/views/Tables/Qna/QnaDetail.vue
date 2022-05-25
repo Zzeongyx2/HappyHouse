@@ -15,7 +15,7 @@
         <b-card-body class="text-left">
             <div v-html="message"></div>
           </b-card-body>
-          <b-card-footer class="text-right">
+          <b-card-footer v-if="userInfo.userid === article.userid" class="text-right">
                 <b-button variant="outline-primary" @click="moveModify()">질문 수정</b-button>
                 <b-button variant="outline-warning" @click="showSwal()">질문 삭제</b-button>
           </b-card-footer>
@@ -26,12 +26,14 @@
 <script>
 //   import subjects from './../projects'
 import { getQuestion, deleteQuestion } from "@/api/qna";
-import { Table, TableColumn} from 'element-ui'
+import { Table, TableColumn} from 'element-ui';
 import answerList from '../Qna/AnswerList.vue';
   // js import
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
 // style import
-import 'sweetalert2/dist/sweetalert2.css'
+import 'sweetalert2/dist/sweetalert2.css';
+import { mapState } from "vuex";
+const memberStore = "memberStore";
 
   export default {
     name: 'QnaDetail',
@@ -47,6 +49,7 @@ import 'sweetalert2/dist/sweetalert2.css'
       };
     },
     computed: {
+      ...mapState(memberStore, ["userInfo"]),
     message() {
       if (this.article.content)
         return this.article.content.split("\n").join("<br>");

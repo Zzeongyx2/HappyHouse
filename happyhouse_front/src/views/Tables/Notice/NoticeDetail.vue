@@ -15,8 +15,8 @@
             <div v-html="message"></div>
           </b-card-body>
           <b-card-footer class="text-right">
-                <b-button variant="outline-primary" @click="moveModify()">공지 수정</b-button>
-                <b-button variant="outline-warning" @click="showSwal()">공지 삭제</b-button>
+                <b-button v-if="isAdmin" variant="outline-primary" @click="moveModify()">공지 수정</b-button>
+                <b-button v-if="isAdmin" variant="outline-warning" @click="showSwal()">공지 삭제</b-button>
           </b-card-footer>
     </b-card>
 </template>
@@ -25,9 +25,11 @@
 import { getNotice, deleteNotice } from "@/api/notice";
   import { Table, TableColumn} from 'element-ui'
   // js import
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
 // style import
-import 'sweetalert2/dist/sweetalert2.css'
+import 'sweetalert2/dist/sweetalert2.css';
+import { mapState } from "vuex";
+const memberStore = "memberStore";
 
   export default {
     name: 'NoticeDetail',
@@ -41,12 +43,13 @@ import 'sweetalert2/dist/sweetalert2.css'
       };
     },
     computed: {
-    message() {
-      if (this.article.content)
-        return this.article.content.split("\n").join("<br>");
-      return "";
+      ...mapState(memberStore, ["isAdmin"]),
+      message() {
+        if (this.article.content)
+          return this.article.content.split("\n").join("<br>");
+        return "";
+      },
     },
-  },
     created() {
         console.log("======detail");
         getNotice(

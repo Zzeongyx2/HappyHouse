@@ -67,6 +67,14 @@
             <i class="ni ni-single-02"></i>
             <span>Login</span>
           </router-link>
+          <router-link
+            v-if="!isLogin"
+            to="/memberregister"
+            class="dropdown-item"
+          >
+            <i class="ni ni-single-02"></i>
+            <span>Sign in</span>
+          </router-link>
           <router-link v-if="isLogin" to="/profile" class="dropdown-item">
             <i class="ni ni-single-02"></i>
             <span>My profile</span>
@@ -138,8 +146,8 @@ export default {
       this.SET_USER_INFO(null);
       this.SET_IS_ADMIN(false);
       sessionStorage.removeItem("access-token");
-      if (this.$route.path != "/dashboard")
-        this.$router.push({ name: "dashboard" });
+      if (this.$route.path != "/happyhouse")
+        this.$router.push({ name: "happyhouse" });
     },
   },
 };

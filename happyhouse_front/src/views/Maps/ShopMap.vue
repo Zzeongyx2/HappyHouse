@@ -1,96 +1,128 @@
 <template>
-    <div>
-      <b-row>
-        <b-col xl="8">
-          <b-card no-body class="border-0">
-            <div class="map-wrap">
-                <div id="map"></div>
-                <ul id="category">
-                    <li id="BK9" data-order="0"> 
-                        <span class="category_bg bank"></span>
-                        은행
-                    </li>       
-                    <li id="MT1" data-order="1"> 
-                        <span class="category_bg mart"></span>
-                        마트
-                    </li>  
-                    <li id="PM9" data-order="2"> 
-                        <span class="category_bg pharmacy"></span>
-                        약국
-                    </li>  
-                    <li id="OL7" data-order="3"> 
-                        <span class="category_bg oil"></span>
-                        주유소
-                    </li>  
-                    <li id="CE7" data-order="4"> 
-                        <span class="category_bg cafe"></span>
-                        카페
-                    </li>  
-                    <li id="CS2" data-order="5"> 
-                        <span class="category_bg store"></span>
-                        편의점
-                    </li>         
-                </ul>
-                <ul id="checkbox">
-                    <b-form-checkbox v-model="isTrafficShow" @change="trafficinfo">교통 정보</b-form-checkbox>
-                    <b-form-checkbox v-model="isBicycleShow" @change="bicycleinfo">자전거 도로</b-form-checkbox>
-                </ul>
-            </div>
-          </b-card>
-        </b-col>
-        <b-col xl="4">
-          <b-card no-body class="border-0">
-            <template v-slot:header>
-              <b-row align-v="center">
-                <b-col xl="10">
-                  <h3 class="mb-0">{{address}}</h3>
-                </b-col>
-                <b-col class="text-right" xl="2">
-                    <b-button size="sm" style="margin:3px">❤</b-button>
-                </b-col>
-              </b-row>
-            </template>
-            <el-table
+  <div>
+    <b-row>
+      <b-col xl="8">
+        <b-card no-body class="border-0">
+          <div class="map-wrap">
+            <div id="map"></div>
+            <ul id="category">
+              <li id="BK9" data-order="0">
+                <span class="category_bg bank"></span>
+                은행
+              </li>
+              <li id="MT1" data-order="1">
+                <span class="category_bg mart"></span>
+                마트
+              </li>
+              <li id="PM9" data-order="2">
+                <span class="category_bg pharmacy"></span>
+                약국
+              </li>
+              <li id="OL7" data-order="3">
+                <span class="category_bg oil"></span>
+                주유소
+              </li>
+              <li id="CE7" data-order="4">
+                <span class="category_bg cafe"></span>
+                카페
+              </li>
+              <li id="CS2" data-order="5">
+                <span class="category_bg store"></span>
+                편의점
+              </li>
+            </ul>
+            <ul id="checkbox">
+              <b-form-checkbox v-model="isTrafficShow" @change="trafficinfo"
+                >교통 정보</b-form-checkbox
+              >
+              <b-form-checkbox v-model="isBicycleShow" @change="bicycleinfo"
+                >자전거 도로</b-form-checkbox
+              >
+            </ul>
+          </div>
+        </b-card>
+      </b-col>
+      <b-col xl="4">
+        <b-card no-body class="border-0">
+          <template v-slot:header>
+            <b-row align-v="center">
+              <b-col xl="8">
+                <h3 class="mb-0">{{ address }}</h3>
+              </b-col>
+              <b-col class="text-right" xl="4">
+                <b-button size="sm" style="margin:3px" @click="getInterest" :pressed.sync="isShow">list</b-button>
+                <b-button variant="success" size="sm" style="margin:3px" @click="saveInterest">❤</b-button>
+              </b-col>
+            </b-row>
+          </template>
+          <el-table
+              type="expand"
               class="table-responsive table"
-              :data="list"
+              :data="regionList"
               :cell-style="{ height: '40px' }"
               header-row-class-name="thead-light"
               v-el-table-infinite-scroll=""
+              @row-click="moveRegion"
+              v-if="isShow"
             >
-              <el-table-column type="expand">
-                <template #default="props">
-                  <div m="4" font-family="sans-serif" font-size="15px">
-                    주소 : {{ props.row.road_address_name }}
-                    <br/>
-                    <div v-if="props.row.phone">전화 : {{ props.row.phone }}</div>
-                    <a :href="props.row.place_url" target="_blank">카카오맵 검색</a>
+              <el-table-column
+                label="Interest"
+                min-width="110px"
+              >
+                <template v-slot="{ row }">
+                  <div class="font-weight-600">
+                    {{ row.sido }} {{row.gugun}} {{row.dong}}
+                    <div style="float:right;">
+                      <b-button size="sm" style="margin:3px" @click="deleteInterest(row)">X</b-button>
+                    </div>
                   </div>
                 </template>
               </el-table-column>
-               <el-table-column
-                label="Name"
-                min-width="110px"
-                prop="place_name"
-                style="max-height: 750px"
-              >
-                <template v-slot="{ row }">
-                  <div class="font-weight-600">{{ row.place_name }}</div>
-                </template>
-              </el-table-column>
             </el-table>
-          </b-card>
-        </b-col>
-      </b-row>
-    </div>
+
+          <el-table
+            class="table-responsive table"
+            :data="list"
+            :cell-style="{ height: '40px' }"
+            header-row-class-name="thead-light"
+            v-el-table-infinite-scroll=""
+          >
+            <el-table-column type="expand">
+              <template #default="props">
+                <div m="4" font-family="sans-serif" font-size="15px">
+                  주소 : {{ props.row.road_address_name }}
+                  <br />
+                  <div v-if="props.row.phone">전화 : {{ props.row.phone }}</div>
+                  <a :href="props.row.place_url" target="_blank"
+                    >카카오맵 검색</a
+                  >
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="Name"
+              min-width="110px"
+              prop="place_name"
+              style="max-height: 750px"
+            >
+              <template v-slot="{ row }">
+                <div class="font-weight-600">{{ row.place_name }}</div>
+              </template>
+            </el-table-column>
+          </el-table>
+        </b-card>
+      </b-col>
+    </b-row>
+  </div>
 </template>
 
 <script>
-import {
-  Table,
-  TableColumn,
-  Select, Option 
-} from "element-ui";
+import { Table, TableColumn, Select, Option } from "element-ui";
 import elTableInfiniteScroll from "el-table-infinite-scroll";
+import {saveRegion, getRegion, deleteRegion} from "@/api/interest";
+import Swal from 'sweetalert2';
+import { mapState } from "vuex";
+const memberStore = "memberStore";
 
 export default {
   name: "ShopMap",
@@ -105,19 +137,33 @@ export default {
       infowindow: null,
       isTrafficShow: false,
       isBicycleShow: false,
-      address : "",
+      address: "",
       list: [],
+      region: {
+        userid: "",
+        sido: "",
+        gugun: "",
+        dong: "",
+      },
+      regionList: [],
+      isShow: false,
     };
+  },
+  computed: {
+    ...mapState(memberStore, ["userInfo"]),
+  },
+  created(){
+    this.region.userid = this.userInfo.userid;
   },
   mounted() {
     if (window.kakao && window.kakao.maps) {
       this.initMap();
     } else {
-
       const script = document.createElement("script");
       /* global kakao */
       script.onload = () => kakao.maps.load(this.initMap);
-      script.src = "//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=48c5481becc496317193e6ddc98de584&libraries=services";
+      script.src =
+        "//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=48c5481becc496317193e6ddc98de584&libraries=services";
       document.head.appendChild(script);
     }
   },
@@ -125,19 +171,95 @@ export default {
     "el-table-infinite-scroll": elTableInfiniteScroll,
   },
   methods: {
-    trafficinfo(){
-        if(this.isTrafficShow === true){
-            this.map.addOverlayMapTypeId(kakao.maps.MapTypeId.TRAFFIC);
-        }else{
-            this.map.removeOverlayMapTypeId(kakao.maps.MapTypeId.TRAFFIC);
-        }
+    trafficinfo() {
+      if (this.isTrafficShow === true) {
+        this.map.addOverlayMapTypeId(kakao.maps.MapTypeId.TRAFFIC);
+      } else {
+        this.map.removeOverlayMapTypeId(kakao.maps.MapTypeId.TRAFFIC);
+      }
     },
-    bicycleinfo(){
-        if(this.isBicycleShow === true){
-            this.map.addOverlayMapTypeId(kakao.maps.MapTypeId.BICYCLE);
-        }else{
-            this.map.removeOverlayMapTypeId(kakao.maps.MapTypeId.BICYCLE);
-        }
+    bicycleinfo() {
+      if (this.isBicycleShow === true) {
+        this.map.addOverlayMapTypeId(kakao.maps.MapTypeId.BICYCLE);
+      } else {
+        this.map.removeOverlayMapTypeId(kakao.maps.MapTypeId.BICYCLE);
+      }
+    },
+    deleteInterest(row){
+      // console.log("row", row);
+      deleteRegion(
+        row,
+        ({ data }) => {
+            if(data === "success"){
+              Swal.fire(
+                'Deleted!',
+                '삭제되었습니다.',
+                'success'
+              )
+            }else{
+              Swal.fire(
+                'Failed!',
+                '삭제 중 문제가 발생하였습니다.',
+                'warning'
+              )
+            }
+             // 현재 route를 /list로 변경.
+            this.getInterest();
+          },
+          () => {}
+      )
+    },
+    getInterest(){
+        getRegion(
+          this.region.userid,
+          ({ data }) => {
+            this.regionList = data;
+            console.log(this.regionList);
+            console.log(this.isShow);
+          },
+          () => {}
+        );
+    },
+    saveInterest(){
+        saveRegion(
+          this.region,
+          ({ data }) => {
+            if(data === "success"){
+              Swal.fire(
+                'Registered!',
+                '등록되었습니다.',
+                'success'
+              )
+            }else{
+              Swal.fire(
+                'Failed!',
+                '등록 중 문제가 발생하였습니다.',
+                'warning'
+              )
+            }
+             // 현재 route를 /list로 변경.
+            this.getInterest();
+          },
+          () => {}
+        )
+    },
+    moveRegion(row){
+      let self = this;
+      console.log(row);
+      // 주소-좌표 변환 객체를 생성합니다
+      var geocoder = new kakao.maps.services.Geocoder();
+      const addr = row.sido + " " + row.gugun + " " + row.dong;
+      console.log(addr);
+      // 주소로 좌표를 검색합니다
+      geocoder.addressSearch(addr, function(result, status) {
+
+          // 정상적으로 검색이 완료됐으면 
+          if (status === kakao.maps.services.Status.OK) {
+
+              var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+              self.map.setCenter(coords);
+          } 
+      });    
     },
     initMap() {
       const container = document.getElementById("map");
@@ -164,7 +286,7 @@ export default {
       let ps = new kakao.maps.services.Places(this.map);
 
       // 지도에 idle 이벤트를 등록합니다
-        kakao.maps.event.addListener(this.map, "idle", searchPlaces);
+      kakao.maps.event.addListener(this.map, "idle", searchPlaces);
 
       // 커스텀 오버레이의 컨텐츠 노드에 css class를 추가합니다
       contentNode.className = "placeinfo_wrap";
@@ -193,30 +315,34 @@ export default {
       var geocoder = new kakao.maps.services.Geocoder();
 
       // 현재 지도 중심좌표로 주소를 검색해서 지도 좌측 상단에 표시합니다
+      searchAddrFromCoords(self.map.getCenter(), displayCenterInfo);
+
+      // 중심 좌표나 확대 수준이 변경됐을 때 지도 중심 좌표에 대한 주소 정보를 표시하도록 이벤트를 등록합니다
+      kakao.maps.event.addListener(self.map, "idle", function () {
         searchAddrFromCoords(self.map.getCenter(), displayCenterInfo);
+        console.log("address", self.address);
+      });
 
-        // 중심 좌표나 확대 수준이 변경됐을 때 지도 중심 좌표에 대한 주소 정보를 표시하도록 이벤트를 등록합니다
-        kakao.maps.event.addListener(self.map, 'idle', function() {
-            searchAddrFromCoords(self.map.getCenter(), displayCenterInfo);
-            console.log("address" , self.address);
-        });
-
-        function searchAddrFromCoords(coords, callback) {
+      function searchAddrFromCoords(coords, callback) {
         // 좌표로 행정동 주소 정보를 요청합니다
-            geocoder.coord2RegionCode(coords.getLng(), coords.getLat(), callback);         
+        geocoder.coord2RegionCode(coords.getLng(), coords.getLat(), callback);
+      }
+      // 지도 좌측상단에 지도 중심좌표에 대한 주소정보를 표출하는 함수입니다
+      function displayCenterInfo(result, status) {
+        if (status === kakao.maps.services.Status.OK) {
+          for (var i = 0; i < result.length; i++) {
+            // 행정동의 region_type 값은 'H' 이므로
+            if (result[i].region_type === "H") {
+              self.address = result[i].address_name;
+              self.region.sido = result[i].region_1depth_name;
+              self.region.gugun = result[i].region_2depth_name;
+              self.region.dong = result[i].region_3depth_name;
+              console.log(self.region.sido, self.region.gugun, self.region.dong);
+              break;
+            }
+          }
         }
-        // 지도 좌측상단에 지도 중심좌표에 대한 주소정보를 표출하는 함수입니다
-        function displayCenterInfo(result, status) {
-            if (status === kakao.maps.services.Status.OK) {
-                for(var i = 0; i < result.length; i++) {
-                    // 행정동의 region_type 값은 'H' 이므로
-                    if (result[i].region_type === 'H') {
-                        self.address = result[i].address_name;
-                        break;
-                    }
-                }
-            }    
-        }  
+      }
 
       // 카테고리 검색을 요청하는 함수입니다
       function searchPlaces() {
@@ -309,7 +435,7 @@ export default {
 
       // 클릭한 마커에 대한 장소 상세정보를 커스텀 오버레이로 표시하는 함수입니다
       function displayPlaceInfo(place) {
-          console.log(place);
+        console.log(place);
         let content =
           '<div class="placeinfo">' +
           '   <a class="title" href="' +
@@ -405,7 +531,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-
 #map {
   border: 5px;
   width: 100%;
@@ -414,176 +539,178 @@ export default {
 
 .map_wrap,
 .map_wrap * {
-    margin:0;
-    padding:0;
-    font-family:sans-serif;
-    font-size:12px;
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  font-size: 12px;
 }
 .map_wrap {
-    position:relative;
-    width:100%;
-    height:350px;
+  position: relative;
+  width: 100%;
+  /* height: 350px; */
 }
 
 #checkbox {
-    position:absolute;
-    top:12px;
-    left:330px;
-    border-radius: 5px;
-    border:1px solid #c5c5c5;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
-    background: rgba(255, 255, 255, 0.95);
-    overflow: hidden;
-    z-index: 2;
-    padding: 10px;
+  position: absolute;
+  top: 12px;
+  left: 330px;
+  border-radius: 5px;
+  border: 1px solid #c5c5c5;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+  background: rgba(255, 255, 255, 0.95);
+  overflow: hidden;
+  z-index: 2;
+  padding: 10px;
 }
 
 #hAddr {
-    position:absolute;
-    left:20px;
-    top:100px;
-    border-radius: 2px;
-    background:#fff;
-    background:rgba(255, 255, 255, 0.9);
-    z-index:2;
-    padding:5px;
+  position: absolute;
+  left: 20px;
+  top: 100px;
+  border-radius: 2px;
+  background: #fff;
+  background: rgba(255, 255, 255, 0.9);
+  z-index: 2;
+  padding: 5px;
 }
-#centerAddr {display:block;margin-top:2px;font-weight: normal;}
+#centerAddr {
+  display: block;
+  margin-top: 2px;
+  font-weight: normal;
+}
 
 #category {
-    position:absolute;
-    top:10px;
-    left:15px;
-    border-radius: 5px;
-    border:1px solid #c5c5c5;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
-    background: rgba(255, 255, 255, 0.9);
-    overflow: hidden;
-    z-index: 2;
-    padding: 0px;
+  position: absolute;
+  top: 10px;
+  left: 15px;
+  border-radius: 5px;
+  border: 1px solid #c5c5c5;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+  background: rgba(255, 255, 255, 0.9);
+  overflow: hidden;
+  z-index: 2;
+  padding: 0px;
 }
 #category li {
-    float:left;
-    list-style: none;
-    width:50px;
-    border-right:
-    1px solid #acacac;
-    padding:6px 0;
-    text-align: center;
-    cursor: pointer;
+  float: left;
+  list-style: none;
+  width: 50px;
+  border-right: 1px solid #acacac;
+  padding: 6px 0;
+  text-align: center;
+  cursor: pointer;
 }
 #category li.on {
-    background: #eee;
+  background: #eee;
 }
 #category li:hover {
-    background: #ffe6e6;
-    border-left:1px solid #acacac;
-    margin-left: -1px;
+  background: #ffe6e6;
+  border-left: 1px solid #acacac;
+  margin-left: -1px;
 }
-#category li:last-child{
-    margin-right:0;
-    border-right:0;
+#category li:last-child {
+  margin-right: 0;
+  border-right: 0;
 }
 #category li span {
-    display: block;
-    margin:3px auto 5px;
-    width:27px;
-    height: 28px;
+  display: block;
+  margin: 3px auto 5px;
+  width: 27px;
+  height: 28px;
 }
 #category li .category_bg {
-    background:url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_category.png) no-repeat;
+  background: url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_category.png)
+    no-repeat;
 }
 #category li .bank {
-    background-position: -5px -0px;
+  background-position: -5px -0px;
 }
 #category li .mart {
-    background-position: -7px -36px;
+  background-position: -7px -36px;
 }
 #category li .pharmacy {
-    background-position: -8px -72px;
+  background-position: -8px -72px;
 }
 #category li .oil {
-    background-position: -8px -108px;
+  background-position: -8px -108px;
 }
 #category li .cafe {
-    background-position: -8px -144px;
+  background-position: -8px -144px;
 }
 #category li .store {
-    background-position: -8px -180px;
+  background-position: -8px -180px;
 }
 #category li .subway {
-    background-position: -8px -180px;
+  background-position: -8px -180px;
 }
 #category li.on .category_bg {
-    background-position-x:-42px;
+  background-position-x: -42px;
 }
 .placeinfo_wrap {
-    position:absolute;
-    bottom:28px;
-    left:-150px;
-    width:300px;
+  position: absolute;
+  bottom: 28px;
+  left: -150px;
+  width: 300px;
 }
 
 .placeinfo {
-    position:relative;
-    width:100%;
-    border-radius:6px;
-    border: 1px solid #ccc;
-    border-bottom:2px solid #ddd;
-    padding-bottom: 10px;
-    background: #fff;
+  position: relative;
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 10px;
+  background: #fff;
 }
 .placeinfo:nth-of-type(n) {
-    border:0; 
-    box-shadow:0px 1px 2px #888;
+  border: 0;
+  box-shadow: 0px 1px 2px #888;
 }
 .placeinfo_wrap .after {
-    content:'';
-    position:relative;
-    margin-left:-12px;
-    left:50%;
-    width:22px;
-    height:12px;
-    background:url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')
+  content: "";
+  position: relative;
+  margin-left: -12px;
+  left: 50%;
+  width: 22px;
+  height: 12px;
+  background: url("https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png");
 }
 .placeinfo a,
 .placeinfo a:hover,
-.placeinfo a:active{
-    color:#fff;
-    text-decoration: none;
+.placeinfo a:active {
+  color: #fff;
+  text-decoration: none;
 }
-.placeinfo a, 
+.placeinfo a,
 .placeinfo span {
-    display: block;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
+  display: block;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 .placeinfo span {
-    margin:5px 5px 0 5px;
-    cursor: default;
-    font-size:13px;
+  margin: 5px 5px 0 5px;
+  cursor: default;
+  font-size: 13px;
 }
-.placeinfo
-.title {
-    font-weight: bold;
-    font-size:14px;
-    border-radius: 6px 6px 0 0;
-    margin: -1px -1px 0 -1px;
-    padding:10px;
-    color: #fff;
-    background: #d95050;
-    background: #d95050 url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/arrow_white.png) no-repeat right 14px center;
+.placeinfo .title {
+  font-weight: bold;
+  font-size: 14px;
+  border-radius: 6px 6px 0 0;
+  margin: -1px -1px 0 -1px;
+  padding: 10px;
+  color: #fff;
+  background: #d95050;
+  background: #d95050
+    url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/arrow_white.png)
+    no-repeat right 14px center;
 }
-.placeinfo
-.tel {
-    color:#0f7833;
+.placeinfo .tel {
+  color: #0f7833;
 }
-.placeinfo 
-.jibun {
-    color:#999;
-    font-size:11px;
-    margin-top:0;
+.placeinfo .jibun {
+  color: #999;
+  font-size: 11px;
+  margin-top: 0;
 }
-
 </style>

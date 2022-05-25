@@ -50,7 +50,7 @@
 
         </b-card>
 
-        <b-modal id="my-modal" title="답변 수정" @ok="deleteAnswer" @cancel="modifyAnswer" ok-title="삭제" cancel-title="수정"
+        <b-modal v-if="userInfo.userid === answer.userid" id="my-modal" title="답변 수정" @ok="deleteAnswer" @cancel="modifyAnswer" ok-title="삭제" cancel-title="수정"
                                                     ok-variant="warning" cancel-variant="success">
             <b-input type="text" v-model="comment"/>
         </b-modal>
@@ -60,7 +60,9 @@
 <script>
 import { listAnswer, deleteAnswer, modifyAnswer, writeAnswer } from "@/api/qna";
 import { Table, TableColumn} from 'element-ui'
+import { mapState } from "vuex";
 import Swal from 'sweetalert2'
+const memberStore = "memberStore";
 
 export default {
     name: 'answerList',
@@ -80,7 +82,7 @@ export default {
         answer: {},
         comment: "",
         newAns: {
-            userid: "ssafy",
+            userid: "",
         },
       };
     },
@@ -91,11 +93,13 @@ export default {
                     this.answerListItem = data;
                     this.newAns.questionno = this.$route.params.questionno;
                     this.paginate(this.perPage, 0);
+                    this.newAns.userid = this.userInfo.userid;
                 },
                 () => {},
             );
     },
     computed: {
+        ...mapState(memberStore, ["userInfo"]),
         rows(){
             return this.answerListItem.length;
         },

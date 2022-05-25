@@ -50,7 +50,7 @@
 
         </b-card>
 
-        <b-modal id="my-modal" title="답변 수정" @ok="deleteReply" @cancel="modifyReply" ok-title="삭제" cancel-title="수정"
+        <b-modal  v-if="userInfo.userid === reply.userid" id="my-modal" title="답변 수정" @ok="deleteReply" @cancel="modifyReply" ok-title="삭제" cancel-title="수정"
                                                     ok-variant="warning" cancel-variant="success">
             <b-input type="text" v-model="comment"/>
         </b-modal>
@@ -60,8 +60,10 @@
 
 <script>
 import { listReply, deleteReply, modifyReply, writeReply } from "@/api/community";
-import { Table, TableColumn} from 'element-ui'
-import Swal from 'sweetalert2'
+import { Table, TableColumn} from 'element-ui';
+import Swal from 'sweetalert2';
+import { mapState } from "vuex";
+const memberStore = "memberStore";
 
 export default {
     name: 'light-table',
@@ -78,7 +80,7 @@ export default {
         reply: {},
         comment: "",
         newRepl: {
-            userid: "ssafy",
+            userid: "",
         },
       };
     },
@@ -89,11 +91,13 @@ export default {
                     this.replyListItem = data;
                     this.newRepl.communityno = this.$route.params.communityno;
                     this.paginate(this.perPage, 0);
+                    this.newRepl.userid = this.userInfo.userid;
                 },
                 () => {},
             );
     },
     computed: {
+        ...mapState(memberStore, ["userInfo"]),
         rows(){
             return this.replyListItem.length;
         },
