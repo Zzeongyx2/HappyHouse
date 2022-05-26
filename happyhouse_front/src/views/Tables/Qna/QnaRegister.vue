@@ -41,7 +41,7 @@
 import { writeQuestion } from "@/api/qna";
 import { Table, TableColumn } from "element-ui";
 import Swal from "sweetalert2";
-import {mapState} from "vuex";
+import { mapState } from "vuex";
 // style import
 import "sweetalert2/dist/sweetalert2.css";
 
@@ -62,7 +62,6 @@ export default {
   },
   created() {
     this.article.userid = this.userInfo.userid;
-    console.log(this.article.userid);
   },
   computed: {
     ...mapState(memberStore, ["userInfo"]),
@@ -77,7 +76,6 @@ export default {
           } else {
             Swal.fire("Failed!", "등록 중 문제가 발생하였습니다.", "warning");
           }
-          // 현재 route를 /list로 변경.
           this.$router.push({ name: "questionList" });
         },
         () => {}

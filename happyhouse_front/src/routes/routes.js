@@ -1,5 +1,5 @@
 import DashboardLayout from "@/views/Layout/DashboardLayout.vue";
-import AuthLayout from "@/views/Pages/AuthLayout.vue";
+import AuthLayout from "@/views/Users/AuthLayout.vue";
 import NoticeLayout from "@/views/NoticeView.vue";
 import QnaLayout from "@/views/QnaView.vue";
 import CommunityLayout from "@/views/CommunityView.vue";
@@ -7,7 +7,7 @@ import store from "@/store/index.js";
 import NotFound from "@/views/NotFoundPage.vue";
 
 const onlyAuthUser = async (to, from, next) => {
-  // console.log(store);
+  // (store);
   const checkUserInfo = store.getters["memberStore/checkUserInfo"];
   const getUserInfo = store._actions["memberStore/getUserInfo"];
   let token = sessionStorage.getItem("access-token");
@@ -17,9 +17,7 @@ const onlyAuthUser = async (to, from, next) => {
   if (checkUserInfo.userid === "") {
     alert("로그인이 필요한 페이지입니다..");
     next({ name: "login" });
-    // router.push({ name: "signIn" });
   } else {
-    // console.log("로그인 했다.");
     next();
   }
 };
@@ -33,18 +31,16 @@ const routes = [
       {
         path: "/happyhouse",
         name: "happyhouse",
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
+
         component: () =>
           import(/* webpackChunkName: "demo" */ "../views/HappyHouse.vue"),
       },
       {
-        path: "/aps",
-        name: "aps",
+        path: "/apt",
+        name: "apt",
         beforeEnter: onlyAuthUser,
         component: () =>
-          import(/* webpackChunkName: "demo" */ "../views/GoogleMaps.vue"),
+          import(/* webpackChunkName: "demo" */ "../views/AptView.vue"),
       },
       {
         path: "shop",
@@ -59,7 +55,7 @@ const routes = [
         beforeEnter: onlyAuthUser,
         component: () =>
           import(
-            /* webpackChunkName: "demo" */ "../views/Pages/UserProfile.vue"
+            /* webpackChunkName: "demo" */ "../views/Users/UserProfile.vue"
           ),
       },
       {
@@ -196,13 +192,13 @@ const routes = [
         path: "/login",
         name: "login",
         component: () =>
-          import(/* webpackChunkName: "demo" */ "../views/Pages/Login.vue"),
+          import(/* webpackChunkName: "demo" */ "../views/Users/Login.vue"),
       },
       {
         path: "/memberregister",
         name: "memberregister",
         component: () =>
-          import(/* webpackChunkName: "demo" */ "../views/Pages/Register.vue"),
+          import(/* webpackChunkName: "demo" */ "../views/Users/Register.vue"),
       },
 
       {
@@ -210,7 +206,7 @@ const routes = [
         name: "findpwd",
         component: () =>
           import(
-            /* webpackChunkName: "demo" */ "../views/Pages/FindPassword.vue"
+            /* webpackChunkName: "demo" */ "../views/Users/FindPassword.vue"
           ),
       },
       { path: "*", component: NotFound },

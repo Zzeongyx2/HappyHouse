@@ -11,26 +11,14 @@
           }"
         >
         </sidebar-item>
-
-        <!-- <sidebar-item
-            :link="{
-              name: 'Icons',
-              path: '/icons',
-              icon: 'ni ni-planet text-blue'
-              }"
-            >
-        </sidebar-item> -->
-
         <sidebar-item
           :link="{
             name: 'Apt',
-            path: '/aps',
+            path: '/apt',
             icon: 'ni ni-pin-3 text-orange',
           }"
         >
         </sidebar-item>
-
-        <!-- 주변 상권 따로 한다면 -->
         <sidebar-item
           :link="{
             name: 'Shop',
