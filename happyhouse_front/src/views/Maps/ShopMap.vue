@@ -50,35 +50,49 @@
                 <h3 class="mb-0">{{ address }}</h3>
               </b-col>
               <b-col class="text-right" xl="4">
-                <b-button size="sm" style="margin:3px" @click="getInterest" :pressed.sync="isShow">list</b-button>
-                <b-button variant="success" size="sm" style="margin:3px" @click="saveInterest">❤</b-button>
+                <b-button
+                  size="sm"
+                  style="margin: 3px"
+                  @click="getInterest"
+                  :pressed.sync="isShow"
+                  >list</b-button
+                >
+                <b-button
+                  variant="success"
+                  size="sm"
+                  style="margin: 3px"
+                  @click="saveInterest"
+                  >❤</b-button
+                >
               </b-col>
             </b-row>
           </template>
           <el-table
-              type="expand"
-              class="table-responsive table"
-              :data="regionList"
-              :cell-style="{ height: '40px' }"
-              header-row-class-name="thead-light"
-              v-el-table-infinite-scroll=""
-              @row-click="moveRegion"
-              v-if="isShow"
-            >
-              <el-table-column
-                label="Interest"
-                min-width="110px"
-              >
-                <template v-slot="{ row }">
-                  <div class="font-weight-600">
-                    {{ row.sido }} {{row.gugun}} {{row.dong}}
-                    <div style="float:right;">
-                      <b-button size="sm" style="margin:3px" @click="deleteInterest(row)">X</b-button>
-                    </div>
+            type="expand"
+            class="table-responsive table"
+            :data="regionList"
+            :cell-style="{ height: '40px' }"
+            header-row-class-name="thead-light"
+            v-el-table-infinite-scroll=""
+            @row-click="moveRegion"
+            v-if="isShow"
+          >
+            <el-table-column label="Interest" min-width="110px">
+              <template v-slot="{ row }">
+                <div class="font-weight-600">
+                  {{ row.sido }} {{ row.gugun }} {{ row.dong }}
+                  <div style="float: right">
+                    <b-button
+                      size="sm"
+                      style="margin: 3px"
+                      @click="deleteInterest(row)"
+                      >X</b-button
+                    >
                   </div>
-                </template>
-              </el-table-column>
-            </el-table>
+                </div>
+              </template>
+            </el-table-column>
+          </el-table>
 
           <el-table
             class="table-responsive table"
@@ -119,8 +133,8 @@
 <script>
 import { Table, TableColumn, Select, Option } from "element-ui";
 import elTableInfiniteScroll from "el-table-infinite-scroll";
-import {saveRegion, getRegion, deleteRegion} from "@/api/interest";
-import Swal from 'sweetalert2';
+import { saveRegion, getRegion, deleteRegion } from "@/api/interest";
+import Swal from "sweetalert2";
 import { mapState } from "vuex";
 const memberStore = "memberStore";
 
@@ -152,7 +166,7 @@ export default {
   computed: {
     ...mapState(memberStore, ["userInfo"]),
   },
-  created(){
+  created() {
     this.region.userid = this.userInfo.userid;
   },
   mounted() {
@@ -185,81 +199,60 @@ export default {
         this.map.removeOverlayMapTypeId(kakao.maps.MapTypeId.BICYCLE);
       }
     },
-    deleteInterest(row){
-      // console.log("row", row);
+    deleteInterest(row) {
       deleteRegion(
         row,
         ({ data }) => {
-            if(data === "success"){
-              Swal.fire(
-                'Deleted!',
-                '삭제되었습니다.',
-                'success'
-              )
-            }else{
-              Swal.fire(
-                'Failed!',
-                '삭제 중 문제가 발생하였습니다.',
-                'warning'
-              )
-            }
-             // 현재 route를 /list로 변경.
-            this.getInterest();
-          },
-          () => {}
-      )
+          if (data === "success") {
+            Swal.fire("Deleted!", "삭제되었습니다.", "success");
+          } else {
+            Swal.fire("Failed!", "삭제 중 문제가 발생하였습니다.", "warning");
+          }
+          // 현재 route를 /list로 변경.
+          this.getInterest();
+        },
+        () => {}
+      );
     },
-    getInterest(){
-        getRegion(
-          this.region.userid,
-          ({ data }) => {
-            this.regionList = data;
-            console.log(this.regionList);
-            console.log(this.isShow);
-          },
-          () => {}
-        );
+    getInterest() {
+      getRegion(
+        this.region.userid,
+        ({ data }) => {
+          this.regionList = data;
+        },
+        () => {}
+      );
     },
-    saveInterest(){
-        saveRegion(
-          this.region,
-          ({ data }) => {
-            if(data === "success"){
-              Swal.fire(
-                'Registered!',
-                '등록되었습니다.',
-                'success'
-              )
-            }else{
-              Swal.fire(
-                'Failed!',
-                '등록 중 문제가 발생하였습니다.',
-                'warning'
-              )
-            }
-             // 현재 route를 /list로 변경.
-            this.getInterest();
-          },
-          () => {}
-        )
+    saveInterest() {
+      saveRegion(
+        this.region,
+        ({ data }) => {
+          if (data === "success") {
+            Swal.fire("Registered!", "등록되었습니다.", "success");
+          } else {
+            Swal.fire("Failed!", "등록 중 문제가 발생하였습니다.", "warning");
+          }
+          // 현재 route를 /list로 변경.
+          this.getInterest();
+        },
+        () => {}
+      );
     },
-    moveRegion(row){
+    moveRegion(row) {
       let self = this;
-      console.log(row);
+
       // 주소-좌표 변환 객체를 생성합니다
       var geocoder = new kakao.maps.services.Geocoder();
       const addr = row.sido + " " + row.gugun + " " + row.dong;
-      console.log(addr);
+
       // 주소로 좌표를 검색합니다
-      geocoder.addressSearch(addr, function(result, status) {
-
-          // 정상적으로 검색이 완료됐으면 
-          if (status === kakao.maps.services.Status.OK) {
-
-              var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-              self.map.setCenter(coords);
-          } 
-      });    
+      geocoder.addressSearch(addr, function (result, status) {
+        // 정상적으로 검색이 완료됐으면
+        if (status === kakao.maps.services.Status.OK) {
+          var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+          self.map.setCenter(coords);
+        }
+      });
     },
     initMap() {
       const container = document.getElementById("map");
@@ -320,7 +313,6 @@ export default {
       // 중심 좌표나 확대 수준이 변경됐을 때 지도 중심 좌표에 대한 주소 정보를 표시하도록 이벤트를 등록합니다
       kakao.maps.event.addListener(self.map, "idle", function () {
         searchAddrFromCoords(self.map.getCenter(), displayCenterInfo);
-        console.log("address", self.address);
       });
 
       function searchAddrFromCoords(coords, callback) {
@@ -337,7 +329,6 @@ export default {
               self.region.sido = result[i].region_1depth_name;
               self.region.gugun = result[i].region_2depth_name;
               self.region.dong = result[i].region_3depth_name;
-              console.log(self.region.sido, self.region.gugun, self.region.dong);
               break;
             }
           }
@@ -364,7 +355,6 @@ export default {
         if (status === kakao.maps.services.Status.OK) {
           // 정상적으로 검색이 완료됐으면 지도에 마커를 표출합니다
           self.list = data;
-          console.log("list", self.list);
           displayPlaces(data);
         } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
           // 검색결과가 없는경우 해야할 처리가 있다면 이곳에 작성해 주세요
@@ -417,10 +407,8 @@ export default {
             position: position, // 마커의 위치
             image: markerImage,
           });
-
         marker.setMap(self.map); // 지도 위에 마커를 표출합니다
         markers.push(marker); // 배열에 생성된 마커를 추가합니다
-        // console.log("=====marker ",marker);
         return marker;
       }
 
@@ -435,7 +423,6 @@ export default {
 
       // 클릭한 마커에 대한 장소 상세정보를 커스텀 오버레이로 표시하는 함수입니다
       function displayPlaceInfo(place) {
-        console.log(place);
         let content =
           '<div class="placeinfo">' +
           '   <a class="title" href="' +
@@ -475,8 +462,6 @@ export default {
           '<div class="after"></div>';
 
         contentNode.innerHTML = content;
-
-        console.log(contentNode);
 
         placeOverlay.setPosition(new kakao.maps.LatLng(place.y, place.x));
         placeOverlay.setMap(self.map);

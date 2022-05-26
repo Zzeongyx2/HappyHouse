@@ -5,7 +5,7 @@
       <b-row>
         <b-col xl="4" md="6">
           <stats-card
-            title="전체 회원수"
+            title="전체 회원 수"
             type="gradient-red"
             :sub-title="users.calcUsers"
             icon="ni ni-single-02"
@@ -36,7 +36,7 @@
 
         <b-col xl="4" md="6">
           <stats-card
-            title="누적 방문수"
+            title="누적 방문 수"
             type="gradient-green"
             :sub-title="users.totalVisited"
             icon="ni ni-trophy"
@@ -70,8 +70,8 @@
 </template>
 <script>
 // Tables
-import NewsTable from "./Dashboard/NewsTable";
-import SubscriptionTable from "./Dashboard/SubscriptionTable.vue";
+import NewsTable from "./Mainpage/NewsTable";
+import SubscriptionTable from "./Mainpage/SubscriptionTable.vue";
 import { calcData } from "@/api/member";
 import { mapState } from "vuex";
 
@@ -92,15 +92,19 @@ export default {
   },
   computed: {
     ...mapState(memberStore, ["userInfo"]),
+
     title() {
-      return this.userInfo.username + "님의 방문수";
+      if (this.userInfo.username === "") {
+        return "로그인 시 방문 수를 확인하실 수 있습니다.";
+      } else {
+        return this.userInfo.username + "님의 방문 수";
+      }
     },
   },
   mounted() {
     calcData(
       ({ data }) => {
         this.users = data;
-        console.log("=====", data);
       },
       () => {}
     );

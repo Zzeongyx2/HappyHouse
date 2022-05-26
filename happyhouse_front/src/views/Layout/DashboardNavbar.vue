@@ -83,14 +83,6 @@
             <i class="ni ni-settings-gear-65"></i>
             <span>Settings</span>
           </router-link>
-          <!-- <b-dropdown-item href="#!">
-            <i class="ni ni-calendar-grid-58"></i>
-            <span>Activity</span>
-          </b-dropdown-item>
-          <b-dropdown-item href="#!">
-            <i class="ni ni-support-16"></i>
-            <span>Support</span>
-          </b-dropdown-item> -->
           <div class="dropdown-divider"></div>
           <b-dropdown-item v-if="isLogin" @click.prevent="onClickLogout">
             <i class="ni ni-user-run"></i>
@@ -140,8 +132,6 @@ export default {
       return string.charAt(0).toUpperCase() + string.slice(1);
     },
     onClickLogout() {
-      // console.log("memberStore : ", ms);
-      console.log("logout!!!!");
       this.SET_IS_LOGIN(false);
       this.SET_USER_INFO(null);
       this.SET_IS_ADMIN(false);

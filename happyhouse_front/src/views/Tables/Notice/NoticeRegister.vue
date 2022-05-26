@@ -61,7 +61,6 @@ export default {
   },
   created() {
     this.article.userid = this.userInfo.userid;
-    console.log(this.article.userid);
   },
   computed: {
     ...mapState(memberStore, ["userInfo"]),

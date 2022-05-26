@@ -71,7 +71,6 @@ const houseStore = {
       state.houses = [];
     },
     SET_HOUSE_LIST: (state, houses) => {
-      //   console.log(houses);
       state.houses = houses;
     },
     SET_DETAIL_HOUSE: (state, house) => {
@@ -89,7 +88,6 @@ const houseStore = {
     getSido: ({ commit }) => {
       sidoList(
         ({ data }) => {
-          // console.log(data);
           commit("SET_SIDO_LIST", data);
         },
         (error) => {
@@ -104,7 +102,6 @@ const houseStore = {
       gugunList(
         params,
         ({ data }) => {
-          // console.log(commit, response);
           commit("SET_GUGUN_LIST", data);
         },
         (error) => {
@@ -131,11 +128,9 @@ const houseStore = {
       houseDetailList(
         params,
         (response) => {
-          //   console.log(response.data.response.body.items.item);
           commit("SET_HOUSE_LIST", response.data);
           commit("SET_MARKER_LIST", response.data);
           commit("SET_REGION", response.data[0]);
-          console.log(response.data);
         },
         (error) => {
           console.log(error);

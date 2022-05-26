@@ -60,7 +60,7 @@ const memberStore = {
       } else {
         state.isLogin = true;
         state.userInfo = userInfo;
-        console.log(userInfo);
+
         if (userInfo.isadmin) {
           state.isAdmin = true;
         }
@@ -90,7 +90,6 @@ const memberStore = {
       await login(
         user,
         (response) => {
-          console.log("로그인시도");
           if (response.data.message === "success") {
             let token = response.data["access-token"];
             commit("SET_IS_LOGIN", true);
@@ -113,9 +112,7 @@ const memberStore = {
         (response) => {
           if (response.data.message === "success") {
             commit("SET_USER_INFO", response.data.userInfo);
-            console.log(response.data.userInfo);
           } else {
-            console.log("유저 정보 없음!!");
           }
         },
         (error) => {
@@ -127,21 +124,13 @@ const memberStore = {
       await regist(
         user,
         (response) => {
-          console.log("회원가입시도 성공");
-          console.log(response);
           if (response.data.message == "success") {
-            console.log("가입성공!");
-            console.log(response);
             commit("SET_IS_REGIST_ERROR", false);
           } else {
-            console.log("가입실패!");
-            console.log(response);
             commit("SET_IS_REGIST_ERROR", true);
           }
         },
         (error) => {
-          console.log("회원가입시도 실패");
-          console.log(error);
           commit("SET_IS_REGIST_ERROR", true);
         }
       );
@@ -151,12 +140,9 @@ const memberStore = {
         await idCheck(
           userid,
           (response) => {
-            console.log("아이디 중복검사 시도 성공");
             if (response.data > 0) {
-              console.log("사용할 수 없는 ID");
               commit("SET_CAN_USABLE_ID", false);
             } else {
-              console.log("사용할 수 있는 ID");
               commit("SET_CAN_USABLE_ID", true);
             }
           },
@@ -188,16 +174,13 @@ const memberStore = {
         },
         (response) => {
           if (response.data.message == "success") {
-            console.log("비밀번호 변경 성공!");
             commit("SET_IS_UPDATE_ERROR", false);
           } else {
-            console.log("비밀번호 변경 실패!");
             commit("SET_IS_UPDATE_ERROR", true);
           }
         },
         (error) => {
           commit("SET_IS_UPDATE_ERROR", true);
-          console.log("비밀번호 변경 실패!");
         }
       );
     },
@@ -205,21 +188,26 @@ const memberStore = {
       await deleteUser(
         userid,
         (response) => {
-          if (response.data.message == "success") {
+          if (response.data.message == "SUCCESS") {
             commit("SET_IS_LOGIN", false);
             commit("SET_USER_INFO", null);
             commit("SET_IS_ADMIN", false);
             commit("SET_IS_DELETE_ERROR", false);
             sessionStorage.removeItem("access-token");
-            if (this.$route.path != "/dashboard")
-              this.$router.push({ name: "dashboard" });
+            if (this.$route.path != "/happyhouse")
+              this.$router.push({ name: "happyhouse" });
           } else {
-            commit("SET_IS_DELETE_ERROR", true);
+            commit("SET_IS_DELETE_ERROR", false);
           }
         },
         (error) => {
-          commit("SET_IS_DELETE_ERROR", true);
-          console.log("회원 삭제 실패!");
+          commit("SET_IS_LOGIN", false);
+          commit("SET_USER_INFO", null);
+          commit("SET_IS_ADMIN", false);
+          commit("SET_IS_DELETE_ERROR", false);
+          sessionStorage.removeItem("access-token");
+          if (this.$route.path != "/happyhouse")
+            this.$router.push({ name: "happyhouse" });
         }
       );
     },
