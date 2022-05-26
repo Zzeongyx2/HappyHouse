@@ -63,6 +63,7 @@
 		select dealAmount, dealYear, dealMonth, dealDay, area, floor
 		from housedeal
 		where aptCode = #{aptCode}
+		order by dealYear desc, dealMonth desc, dealDay desc
 	</select>
 	
 	<insert id="insertRegion" parameterType="region">
