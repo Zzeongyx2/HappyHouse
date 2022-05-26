@@ -404,7 +404,26 @@ export default {
       this.filteredList = [];
       this.houses.map((item) => {
         if (String(item.aptName).includes(this.findApt)) {
-          this.filteredList.push(item);
+          this.filteredList.push({
+            aptName: item.aptName,
+            lat: item.lat,
+            lng: item.lng,
+            recentDealDate:
+              item.aptDetailInfos[0].dealYear +
+              "." +
+              item.aptDetailInfos[0].dealMonth +
+              "." +
+              item.aptDetailInfos[0].dealDay,
+            recentDealAmount: item.aptDetailInfos[0].dealAmount.trim(),
+            buildYear: item.buildYear,
+            dealAmount: item.dealAmount,
+            aptDetailInfos: item.aptDetailInfos,
+            buildYear: item.buildYear,
+            sidoName: item.sidoName,
+            gugunName: item.gugunName,
+            jibun: item.jibun,
+            dongName: item.dongName,
+          });
         }
       });
       this.displayMarker(this.filteredList);
@@ -548,6 +567,7 @@ export default {
       this.map.relayout();
     },
     displayMarker(markerarray) {
+      console.log("찍을 어레이", markerarray);
       let self = this;
       if (this.markers.length > 0) {
         this.markers.forEach((marker) => marker.setMap(null));
@@ -562,6 +582,7 @@ export default {
       var bounds = new kakao.maps.LatLngBounds();
       deleteOverlay();
       for (var i = 0; i < markerarray.length; i++) {
+        console.log("markerarray?", markerarray[i]);
         var marker = new kakao.maps.Marker({
           map: self.map,
           position: new kakao.maps.LatLng(
@@ -599,13 +620,11 @@ export default {
           "년</span>";
 
         content += "</div>" + '<div class="after"></div>';
-
-        contentNode.innerHTML = content;
-        (function (marker, place) {
-          kakao.maps.event.addListener(marker, "mouseover", function () {
-            placeOverlay.setPosition(
-              new kakao.maps.LatLng(place.lat, place.lng)
-            );
+        marker.setMap(self.map);
+        (function (marke, plac) {
+          kakao.maps.event.addListener(marke, "mouseover", function () {
+            contentNode.innerHTML = content;
+            placeOverlay.setPosition(new kakao.maps.LatLng(plac.lat, plac.lng));
             placeOverlay.setMap(self.map);
           });
         })(marker, markerarray[i]);
@@ -635,47 +654,6 @@ export default {
         // 커스텀 오버레이를 숨깁니다
         placeOverlay.setMap(null);
         // 지도에 표시되고 있는 마커를 제거합니다
-      }
-
-      function displayPlaceInfo(place) {
-        console.log(place);
-        let content =
-          '<div class="aptinfo">' +
-          '   <span class="title" ' +
-          'target="_blank" title="' +
-          place.aptName +
-          '" onclick="self.sayhello">' +
-          place.aptName +
-          "</span>";
-
-        content +=
-          '    <span title="' +
-          place.recentDealDate +
-          '">' +
-          "최근거래 : " +
-          place.recentDealDate +
-          "</span>" +
-          '  <span class="amount" title="' +
-          place.recentDealAmount +
-          '">가격 : ' +
-          place.recentDealAmount +
-          "(만)</span>";
-
-        content +=
-          '    <span class="build" title="' +
-          place.buildYear +
-          '">건축년도 : ' +
-          place.buildYear +
-          "년</span>";
-
-        content += "</div>" + '<div class="after"></div>';
-
-        contentNode.innerHTML = content;
-
-        console.log(contentNode);
-
-        placeOverlay.setPosition(new kakao.maps.LatLng(place.lat, place.lng));
-        placeOverlay.setMap(self.map);
       }
     },
     sayhello() {
