@@ -14,9 +14,9 @@ const onlyAuthUser = async (to, from, next) => {
   if (checkUserInfo == null && token) {
     await getUserInfo(token);
   }
-  if (checkUserInfo === null) {
+  if (checkUserInfo.userid === "") {
     alert("로그인이 필요한 페이지입니다..");
-    next({ name: "signIn" });
+    next({ name: "login" });
     // router.push({ name: "signIn" });
   } else {
     // console.log("로그인 했다.");
@@ -42,24 +42,21 @@ const routes = [
       {
         path: "/aps",
         name: "aps",
+        beforeEnter: onlyAuthUser,
         component: () =>
           import(/* webpackChunkName: "demo" */ "../views/GoogleMaps.vue"),
       },
       {
-        path: "icons",
-        name: "icons",
-        component: () =>
-          import(/* webpackChunkName: "demo" */ "../views/Icons.vue"),
-      },
-      {
         path: "shop",
         name: "shop",
+        beforeEnter: onlyAuthUser,
         component: () =>
           import(/* webpackChunkName: "demo" */ "../views/ShopView.vue"),
       },
       {
         path: "/profile",
         name: "profile",
+        beforeEnter: onlyAuthUser,
         component: () =>
           import(
             /* webpackChunkName: "demo" */ "../views/Pages/UserProfile.vue"
@@ -68,6 +65,7 @@ const routes = [
       {
         path: "notice",
         name: "notice",
+        beforeEnter: onlyAuthUser,
         redirect: "noticelist",
         component: NoticeLayout,
         children: [
@@ -108,6 +106,7 @@ const routes = [
       {
         path: "qna",
         name: "qna",
+
         redirect: "questionlist",
         component: QnaLayout,
         children: [
@@ -149,6 +148,7 @@ const routes = [
         path: "community",
         name: "comm",
         redirect: "commlist",
+        beforeEnter: onlyAuthUser,
         component: CommunityLayout,
         children: [
           {
