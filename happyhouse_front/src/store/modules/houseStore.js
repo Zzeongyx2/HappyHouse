@@ -51,6 +51,10 @@ const houseStore = {
             item.aptDetailInfos[0].dealDay,
           recentDealAmount: item.aptDetailInfos[0].dealAmount.trim(),
           buildYear: item.buildYear,
+          sidoName: item.sidoName,
+          gugunName: item.gugunName,
+          jibun: item.jibun,
+          dongName: item.dongName,
         });
       });
     },
